@@ -98,6 +98,38 @@ export async function getAuthors() {
   return authors.docs
 }
 
+export async function getAuthorBySlug(slug: string) {
+  const payload = await getPayloadClient()
+
+  const authors = await payload.find({
+    collection: 'authors',
+    where: {
+      slug: { equals: slug },
+    },
+    depth: 1,
+    limit: 1,
+  })
+
+  return authors.docs[0] || null
+}
+
+export async function getArticlesByAuthor(authorId: string, limit = 50) {
+  const payload = await getPayloadClient()
+
+  const articles = await payload.find({
+    collection: 'articles',
+    where: {
+      author: { equals: authorId },
+      _status: { equals: 'published' },
+    },
+    depth: 2,
+    limit,
+    sort: '-publishedAt',
+  })
+
+  return articles.docs
+}
+
 export async function getCategories() {
   const payload = await getPayloadClient()
 
