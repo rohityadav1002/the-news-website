@@ -10,6 +10,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Allow Live Preview iframe embedding
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://*.vercel.app https://*.the-order-of-change.com",
+          },
+        ],
+      },
+    ]
+  },
 }
 
 export default withPayload(nextConfig)
