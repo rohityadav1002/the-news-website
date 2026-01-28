@@ -855,6 +855,7 @@ export default function Home() {
                 <li><Link href="/about" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: '#a1a1aa' }}>About</Link></li>
                 <li><Link href="/subscribe" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: '#a1a1aa' }}>Subscribe</Link></li>
                 <li><Link href="/contact" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: '#a1a1aa' }}>Contact</Link></li>
+                <li><Link href="/admin" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: '#52525b' }}>Admin</Link></li>
               </ul>
             </div>
           </div>

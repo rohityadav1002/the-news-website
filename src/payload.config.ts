@@ -251,6 +251,13 @@ export default buildConfig({
           },
         },
         {
+          name: 'subtitle',
+          type: 'text',
+          admin: {
+            description: 'Secondary headline displayed below the main title',
+          },
+        },
+        {
           name: 'excerpt',
           type: 'textarea',
           required: true,
