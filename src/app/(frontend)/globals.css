@@ -3,125 +3,81 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════
-   THE ORDER OF CHANGE — Gallery of Power
+   THE ORDER OF CHANGE — Custom Properties
    ═══════════════════════════════════════════════════════════════════ */
 
-:root {
-  --color-gallery-black: #0a0a0a;
-  --color-gallery-deep: #0f0f0f;
-  --color-spotlight: #fafaf9;
-  --color-spotlight-dim: #a1a1aa;
-  --color-gold: #b8860b;
-  --color-gold-muted: #8b6914;
-  --color-frame: #1c1c1c;
-  --color-frame-edge: #2a2a2a;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Libre Baskerville', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+@layer base {
+  :root {
+    --color-gold: #b8860b;
+    --color-gold-muted: #8b6914;
+    --color-gallery-black: #0a0a0a;
+    --color-gallery-deep: #0f0f0f;
+    --color-frame: #1c1c1c;
+    --color-frame-edge: #2a2a2a;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #0a0a0a;
+    color: #fafaf9;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: #0a0a0a;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   BASE STYLES
+   TYPOGRAPHY
    ═══════════════════════════════════════════════════════════════════ */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  .font-body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+  }
 
-body {
-  background-color: var(--color-gallery-black);
-  color: var(--color-spotlight);
-  font-family: var(--font-body);
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-::selection {
-  background-color: var(--color-gold);
-  color: var(--color-gallery-black);
+  .tracking-exhibition {
+    letter-spacing: 0.15em;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TYPOGRAPHY UTILITIES
+   GALLERY FRAME
    ═══════════════════════════════════════════════════════════════════ */
 
-.font-display {
-  font-family: var(--font-display) !important;
-}
+@layer components {
+  .gallery-frame {
+    position: relative;
+    background: var(--color-frame);
+    padding: 2px;
+  }
 
-.font-body {
-  font-family: var(--font-body) !important;
-}
+  .gallery-frame-inner {
+    background: var(--color-gallery-deep);
+    position: relative;
+  }
 
-.font-mono {
-  font-family: var(--font-mono) !important;
-}
-
-.tracking-exhibition {
-  letter-spacing: 0.15em;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   GALLERY FRAME — Article cards as framed artwork
-   ═══════════════════════════════════════════════════════════════════ */
-
-.gallery-frame {
-  position: relative;
-  background: var(--color-frame);
-  padding: 2px;
-}
-
-.gallery-frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--color-frame-edge) 0%, var(--color-frame) 50%, #141414 100%);
-  z-index: -1;
-}
-
-.gallery-frame-inner {
-  background: var(--color-gallery-deep);
-  position: relative;
-}
-
-.gallery-frame-inner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   SPOTLIGHT EFFECTS
-   ═══════════════════════════════════════════════════════════════════ */
-
-.spotlight {
-  position: relative;
-}
-
-.spotlight::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200%;
-  height: 400px;
-  background: radial-gradient(ellipse at center top, rgba(250, 250, 249, 0.03) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.spotlight-gold::before {
-  background: radial-gradient(ellipse at center top, rgba(184, 134, 11, 0.05) 0%, transparent 70%);
+  .gallery-frame-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -131,7 +87,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -139,56 +95,36 @@ body {
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0;
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }
-
-.animate-fade-in {
-  animation: fadeIn 1s ease-out forwards;
-  opacity: 0;
-}
-
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-.delay-700 { animation-delay: 700ms; }
 
 /* ═══════════════════════════════════════════════════════════════════
    HOVER EFFECTS
    ═══════════════════════════════════════════════════════════════════ */
 
-.hover-illuminate {
-  transition: all 0.4s ease;
-}
+@layer utilities {
+  .hover-gold {
+    transition: color 0.3s ease;
+  }
+  .hover-gold:hover {
+    color: var(--color-gold);
+  }
 
-.hover-illuminate:hover {
-  box-shadow: 0 0 0 1px var(--color-gold-muted), 0 20px 50px -20px rgba(184, 134, 11, 0.15);
-}
-
-.hover-lift {
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
-}
-
-.hover-gold {
-  transition: color 0.3s ease;
-}
-
-.hover-gold:hover {
-  color: var(--color-gold);
+  .hover-illuminate {
+    transition: box-shadow 0.3s ease;
+  }
+  .hover-illuminate:hover {
+    box-shadow: 0 0 0 1px var(--color-gold-muted), 0 20px 40px -15px rgba(184, 134, 11, 0.2);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -197,13 +133,10 @@ body {
 
 .grain {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.03;
+  opacity: 0.02;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
@@ -212,15 +145,15 @@ body {
    ═══════════════════════════════════════════════════════════════════ */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-gallery-black);
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-frame-edge);
+  background: #2a2a2a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
