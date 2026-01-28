@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getArticleBySlug, getRelatedArticles, getAllArticleSlugs } from "@/lib/payload";
+import { getArticleBySlug, getRelatedArticles } from "@/lib/payload";
 import { RichText } from "@/components/RichText";
 import {
   ReadingProgress,
@@ -54,11 +54,9 @@ interface Article {
   };
 }
 
-// Generate static params for all articles
-export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+// Dynamic rendering - fetch article on each request
+// This avoids needing database access at build time
+export const dynamic = 'force-dynamic';
 
 // Generate metadata for the page
 export async function generateMetadata({
