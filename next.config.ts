@@ -1,7 +1,8 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+import { withPayload } from '@payloadcms/next/withPayload'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  // Payload CMS will be configured via withPayload
+}
 
-export default nextConfig;
+export default withPayload(nextConfig)
