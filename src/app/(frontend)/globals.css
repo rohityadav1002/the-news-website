@@ -1,12 +1,12 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════
    THE ORDER OF CHANGE — Gallery of Power
-   A museum exhibition experience for geopolitical analysis
    ═══════════════════════════════════════════════════════════════════ */
 
-@theme inline {
+:root {
   --color-gallery-black: #0a0a0a;
   --color-gallery-deep: #0f0f0f;
   --color-spotlight: #fafaf9;
@@ -15,16 +15,9 @@
   --color-gold-muted: #8b6914;
   --color-frame: #1c1c1c;
   --color-frame-edge: #2a2a2a;
-
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Libre Baskerville', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
-}
-
-:root {
-  --radius: 0;
-  --background: #0a0a0a;
-  --foreground: #fafaf9;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -50,31 +43,64 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Selection styling */
 ::selection {
   background-color: var(--color-gold);
   color: var(--color-gallery-black);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TYPOGRAPHY
+   TYPOGRAPHY UTILITIES
    ═══════════════════════════════════════════════════════════════════ */
 
 .font-display {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
 }
 
 .font-body {
-  font-family: var(--font-body);
+  font-family: var(--font-body) !important;
 }
 
 .font-mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono) !important;
+}
+
+.tracking-exhibition {
+  letter-spacing: 0.15em;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SPOTLIGHT EFFECT — The signature visual treatment
-   Content emerges from darkness as if illuminated by gallery lighting
+   GALLERY FRAME — Article cards as framed artwork
+   ═══════════════════════════════════════════════════════════════════ */
+
+.gallery-frame {
+  position: relative;
+  background: var(--color-frame);
+  padding: 2px;
+}
+
+.gallery-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-frame-edge) 0%, var(--color-frame) 50%, #141414 100%);
+  z-index: -1;
+}
+
+.gallery-frame-inner {
+  background: var(--color-gallery-deep);
+  position: relative;
+}
+
+.gallery-frame-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SPOTLIGHT EFFECTS
    ═══════════════════════════════════════════════════════════════════ */
 
 .spotlight {
@@ -89,97 +115,17 @@ body {
   transform: translateX(-50%);
   width: 200%;
   height: 400px;
-  background: radial-gradient(
-    ellipse at center top,
-    rgba(250, 250, 249, 0.03) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center top, rgba(250, 250, 249, 0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
 .spotlight-gold::before {
-  background: radial-gradient(
-    ellipse at center top,
-    rgba(184, 134, 11, 0.05) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center top, rgba(184, 134, 11, 0.05) 0%, transparent 70%);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   FRAME EFFECT — Article cards as framed artwork
-   ═══════════════════════════════════════════════════════════════════ */
-
-.gallery-frame {
-  position: relative;
-  background: var(--color-frame);
-  padding: 2px;
-}
-
-.gallery-frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--color-frame-edge) 0%,
-    var(--color-frame) 50%,
-    #141414 100%
-  );
-  z-index: -1;
-}
-
-.gallery-frame-inner {
-  background: var(--color-gallery-deep);
-  position: relative;
-}
-
-/* Subtle inner shadow for depth */
-.gallery-frame-inner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   GEOMETRIC ACCENTS — Curatorial guide lines
-   ═══════════════════════════════════════════════════════════════════ */
-
-.guide-line {
-  position: relative;
-}
-
-.guide-line::after {
-  content: '';
-  position: absolute;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--color-gold-muted) 50%,
-    transparent 100%
-  );
-  height: 1px;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  opacity: 0.3;
-}
-
-.guide-line-vertical::after {
-  width: 1px;
-  height: 100%;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    var(--color-gold-muted) 50%,
-    transparent 100%
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   ANIMATIONS — Entrance reveals
+   ANIMATIONS
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes fadeInUp {
@@ -198,35 +144,6 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes expandLine {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes subtleFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
   opacity: 0;
@@ -237,17 +154,6 @@ body {
   opacity: 0;
 }
 
-.animate-slide-in-left {
-  animation: slideInLeft 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-.animate-expand-line {
-  animation: expandLine 1.2s ease-out forwards;
-  transform-origin: left center;
-}
-
-/* Staggered delays */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
@@ -255,10 +161,9 @@ body {
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
 .delay-700 { animation-delay: 700ms; }
-.delay-800 { animation-delay: 800ms; }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HOVER STATES — Subtle revelations
+   HOVER EFFECTS
    ═══════════════════════════════════════════════════════════════════ */
 
 .hover-illuminate {
@@ -266,9 +171,7 @@ body {
 }
 
 .hover-illuminate:hover {
-  box-shadow:
-    0 0 0 1px var(--color-gold-muted),
-    0 20px 50px -20px rgba(184, 134, 11, 0.15);
+  box-shadow: 0 0 0 1px var(--color-gold-muted), 0 20px 50px -20px rgba(184, 134, 11, 0.15);
 }
 
 .hover-lift {
@@ -280,7 +183,6 @@ body {
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
 }
 
-/* Gold text reveal on hover */
 .hover-gold {
   transition: color 0.3s ease;
 }
@@ -290,7 +192,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   GRAIN TEXTURE — Adds subtle museum atmosphere
+   GRAIN TEXTURE
    ═══════════════════════════════════════════════════════════════════ */
 
 .grain {
@@ -306,7 +208,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SCROLLBAR — Minimal, on-theme
+   SCROLLBAR
    ═══════════════════════════════════════════════════════════════════ */
 
 ::-webkit-scrollbar {
@@ -319,59 +221,8 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-frame-edge);
-  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gold-muted);
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   UTILITY CLASSES
-   ═══════════════════════════════════════════════════════════════════ */
-
-.text-gold {
-  color: var(--color-gold);
-}
-
-.text-dim {
-  color: var(--color-spotlight-dim);
-}
-
-.bg-gallery {
-  background-color: var(--color-gallery-black);
-}
-
-.bg-gallery-deep {
-  background-color: var(--color-gallery-deep);
-}
-
-.border-frame {
-  border-color: var(--color-frame-edge);
-}
-
-/* Letter spacing for headlines */
-.tracking-exhibition {
-  letter-spacing: 0.15em;
-}
-
-/* Special link underline */
-.link-underline {
-  position: relative;
-  text-decoration: none;
-}
-
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--color-gold);
-  transition: width 0.3s ease;
-}
-
-.link-underline:hover::after {
-  width: 100%;
 }
