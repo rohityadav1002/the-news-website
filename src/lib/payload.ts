@@ -13,7 +13,7 @@ export async function getArticleBySlug(slug: string, draft = false) {
     where: {
       slug: { equals: slug },
       // Use _status for versioned collections
-      status: { equals: draft ? 'draft' : 'published' },
+      _status: { equals: draft ? 'draft' : 'published' },
     },
     depth: 2,
     limit: 1,
@@ -30,7 +30,7 @@ export async function getPublishedArticles(limit = 10, category?: string) {
     const articles = await payload.find({
       collection: 'articles',
       where: {
-        status: { equals: 'published' },
+        _status: { equals: 'published' },
         'category.slug': { equals: category },
       },
       depth: 2,
@@ -43,7 +43,7 @@ export async function getPublishedArticles(limit = 10, category?: string) {
   const articles = await payload.find({
     collection: 'articles',
     where: {
-      status: { equals: 'published' },
+      _status: { equals: 'published' },
     },
     depth: 2,
     limit,
@@ -61,7 +61,7 @@ export async function getRelatedArticles(currentSlug: string, categoryId: string
     where: {
       slug: { not_equals: currentSlug },
       category: { equals: categoryId },
-      status: { equals: 'published' },
+      _status: { equals: 'published' },
     },
     depth: 2,
     limit,
@@ -77,7 +77,7 @@ export async function getAllArticleSlugs() {
   const articles = await payload.find({
     collection: 'articles',
     where: {
-      status: { equals: 'published' },
+      _status: { equals: 'published' },
     },
     depth: 0,
     limit: 1000,
@@ -117,7 +117,7 @@ export async function getPageBySlug(slug: string, draft = false) {
     collection: 'pages',
     where: {
       slug: { equals: slug },
-      status: { equals: draft ? 'draft' : 'published' },
+      _status: { equals: draft ? 'draft' : 'published' },
     },
     depth: 2,
     limit: 1,
