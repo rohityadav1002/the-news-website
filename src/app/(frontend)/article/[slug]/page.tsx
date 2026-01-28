@@ -10,6 +10,7 @@ import {
   ShareButtons,
   StickyShareBar,
 } from "@/components/ArticleComponents";
+import { Blocks } from "@/components/Blocks";
 
 // Type definitions
 interface Author {
@@ -42,6 +43,7 @@ interface Article {
   slug: string;
   excerpt: string;
   content: unknown;
+  layout?: unknown[];
   featuredImage?: FeaturedImage | string;
   author: Author | string;
   category: Category | string;
@@ -257,6 +259,13 @@ export default async function ArticlePage({
         <div className="max-w-3xl mx-auto">
           <RichText content={article.content as never} />
         </div>
+
+        {/* Layout Blocks */}
+        {article.layout && article.layout.length > 0 && (
+          <div className="py-8 px-6 lg:px-12">
+            <Blocks blocks={article.layout as never[]} />
+          </div>
+        )}
       </article>
 
       {/* Article Footer - Author CTA */}
