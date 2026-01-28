@@ -223,15 +223,14 @@ export default buildConfig({
           url: ({ data }) => `${getServerURL()}/${data?.slug === 'home' ? '' : data?.slug || ''}`,
         },
       },
-      versions: {
-        drafts: {
-          autosave: {
-            interval: 100,
-          },
-          schedulePublish: true,
-        },
-        maxPerDoc: 50,
-      },
+      // Versioning temporarily disabled - enable after schema migration
+      // versions: {
+      //   drafts: {
+      //     autosave: { interval: 100 },
+      //     schedulePublish: true,
+      //   },
+      //   maxPerDoc: 50,
+      // },
       fields: [
         {
           name: 'title',
@@ -244,6 +243,15 @@ export default buildConfig({
           required: true,
           unique: true,
           admin: { description: 'URL path (use "home" for homepage)' },
+        },
+        {
+          name: 'status',
+          type: 'select',
+          defaultValue: 'draft',
+          options: [
+            { label: 'Draft', value: 'draft' },
+            { label: 'Published', value: 'published' },
+          ],
         },
         {
           name: 'heroType',
@@ -265,10 +273,15 @@ export default buildConfig({
           },
         },
         {
-          name: 'layout',
-          type: 'blocks',
-          blocks: layoutBlocks,
+          name: 'content',
+          type: 'richText',
         },
+        // Layout blocks temporarily disabled - enable after schema migration
+        // {
+        //   name: 'layout',
+        //   type: 'blocks',
+        //   blocks: layoutBlocks,
+        // },
         {
           name: 'publishedAt',
           type: 'date',
@@ -286,20 +299,19 @@ export default buildConfig({
       slug: 'articles',
       admin: {
         useAsTitle: 'title',
-        defaultColumns: ['title', 'author', '_status', 'category', 'publishedAt'],
+        defaultColumns: ['title', 'author', 'status', 'category', 'publishedAt'],
         livePreview: {
           url: ({ data }) => `${getServerURL()}/article/${data?.slug || ''}`,
         },
       },
-      versions: {
-        drafts: {
-          autosave: {
-            interval: 100,
-          },
-          schedulePublish: true,
-        },
-        maxPerDoc: 50,
-      },
+      // Versioning temporarily disabled - enable after schema migration
+      // versions: {
+      //   drafts: {
+      //     autosave: { interval: 100 },
+      //     schedulePublish: true,
+      //   },
+      //   maxPerDoc: 50,
+      // },
       fields: [
         {
           type: 'tabs',
@@ -340,14 +352,13 @@ export default buildConfig({
                   type: 'richText',
                   required: true,
                 },
-                {
-                  name: 'layout',
-                  type: 'blocks',
-                  blocks: layoutBlocks,
-                  admin: {
-                    description: 'Optional: Add layout blocks after main content',
-                  },
-                },
+                // Layout blocks temporarily disabled - enable after schema migration
+                // {
+                //   name: 'layout',
+                //   type: 'blocks',
+                //   blocks: layoutBlocks,
+                //   admin: { description: 'Optional: Add layout blocks after main content' },
+                // },
               ],
             },
             {
@@ -372,6 +383,17 @@ export default buildConfig({
                   hasMany: true,
                   maxRows: 3,
                   admin: { description: 'Manual selection of related articles' },
+                },
+                {
+                  name: 'status',
+                  type: 'select',
+                  defaultValue: 'draft',
+                  required: true,
+                  options: [
+                    { label: 'Draft', value: 'draft' },
+                    { label: 'Published', value: 'published' },
+                    { label: 'Scheduled', value: 'scheduled' },
+                  ],
                 },
                 {
                   name: 'tags',
