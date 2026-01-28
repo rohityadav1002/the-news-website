@@ -4,22 +4,58 @@ import { fileURLToPath } from 'url'
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { seoPlugin } from '@payloadcms/plugin-seo'
+import { searchPlugin } from '@payloadcms/plugin-search'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { layoutBlocks } from './blocks'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Helper to get server URL
+const getServerURL = () => {
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
+  return 'http://localhost:3000'
+}
+
 export default buildConfig({
-  // Admin panel configuration
+  // ═══════════════════════════════════════════════════════════════════
+  // ADMIN PANEL CONFIGURATION
+  // ═══════════════════════════════════════════════════════════════════
   admin: {
     user: 'users',
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    // Live Preview - See changes as you type
+    livePreview: {
+      url: ({ data, collectionConfig }) => {
+        const baseUrl = getServerURL()
+        if (collectionConfig?.slug === 'articles') {
+          return `${baseUrl}/article/${data?.slug || ''}`
+        }
+        if (collectionConfig?.slug === 'pages') {
+          return `${baseUrl}/${data?.slug === 'home' ? '' : data?.slug || ''}`
+        }
+        return baseUrl
+      },
+      collections: ['articles', 'pages'],
+      breakpoints: [
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+      ],
+    },
   },
 
-  // Collections (content types)
+  // ═══════════════════════════════════════════════════════════════════
+  // COLLECTIONS
+  // ═══════════════════════════════════════════════════════════════════
   collections: [
-    // Users collection (CMS authentication - internal)
+    // ─────────────────────────────────────────────────────────────────
+    // Users (CMS Authentication)
+    // ─────────────────────────────────────────────────────────────────
     {
       slug: 'users',
       auth: true,
@@ -47,7 +83,9 @@ export default buildConfig({
       ],
     },
 
-    // Authors collection (public columnist personas)
+    // ─────────────────────────────────────────────────────────────────
+    // Authors (Public Columnist Personas)
+    // ─────────────────────────────────────────────────────────────────
     {
       slug: 'authors',
       admin: {
@@ -56,40 +94,36 @@ export default buildConfig({
         defaultColumns: ['penName', 'voiceType', 'publicLocation'],
       },
       fields: [
-        // Public Information (shown on website)
         {
           name: 'penName',
           type: 'text',
           required: true,
-          admin: {
-            description: 'e.g., V. Rao, A. Sterling, M. Chen',
-          },
+          admin: { description: 'e.g., V. Rao, A. Sterling, M. Chen' },
+        },
+        {
+          name: 'slug',
+          type: 'text',
+          required: true,
+          unique: true,
+          admin: { description: 'URL-friendly identifier' },
         },
         {
           name: 'publicBio',
           type: 'textarea',
           required: true,
-          admin: {
-            description: 'Short bio shown on the website',
-          },
+          admin: { description: 'Short bio shown on the website' },
         },
         {
           name: 'publicLocation',
           type: 'text',
           required: true,
-          admin: {
-            description: 'e.g., "Based in Asia", "Based in the Gulf", "Based in Europe"',
-          },
+          admin: { description: 'e.g., "Based in Asia", "Based in the Gulf"' },
         },
         {
           name: 'avatar',
           type: 'upload',
           relationTo: 'media',
-          admin: {
-            description: 'Author photo/avatar (optional)',
-          },
         },
-        // Voice Configuration
         {
           name: 'voiceType',
           type: 'select',
@@ -99,41 +133,21 @@ export default buildConfig({
             { label: 'Pragmatic Voice', value: 'pragmatic' },
             { label: 'Neutral Synthesizer', value: 'neutral' },
           ],
-          admin: {
-            description: 'The analytical perspective this author represents',
-          },
         },
         {
           name: 'contentFocus',
           type: 'textarea',
-          admin: {
-            description: 'What type of content this author writes (for internal reference)',
-          },
+          admin: { description: 'What type of content this author writes (internal)' },
         },
-        // Private Information (internal only - never shown publicly)
         {
           name: 'privateInfo',
           type: 'group',
           label: 'Private Information (Internal Only)',
-          admin: {
-            description: 'Background details for maintaining persona consistency',
-          },
+          admin: { description: 'Background details for persona consistency' },
           fields: [
-            {
-              name: 'fullName',
-              type: 'text',
-              admin: {
-                description: 'Full fictional name',
-              },
-            },
-            {
-              name: 'age',
-              type: 'number',
-            },
-            {
-              name: 'birthYear',
-              type: 'number',
-            },
+            { name: 'fullName', type: 'text' },
+            { name: 'age', type: 'number' },
+            { name: 'birthYear', type: 'number' },
             {
               name: 'gender',
               type: 'select',
@@ -142,57 +156,32 @@ export default buildConfig({
                 { label: 'Female', value: 'female' },
               ],
             },
-            {
-              name: 'ethnicity',
-              type: 'text',
-            },
-            {
-              name: 'birthplace',
-              type: 'text',
-            },
-            {
-              name: 'actualLocation',
-              type: 'text',
-              admin: {
-                description: 'More specific location (internal)',
-              },
-            },
-            {
-              name: 'education',
-              type: 'textarea',
-            },
-            {
-              name: 'backgroundStory',
-              type: 'richText',
-              admin: {
-                description: 'Full background story for persona consistency',
-              },
-            },
-            {
-              name: 'personality',
-              type: 'textarea',
-              admin: {
-                description: 'Personality traits and writing style',
-              },
-            },
-            {
-              name: 'coreBeliefs',
-              type: 'textarea',
-              admin: {
-                description: 'Core beliefs and worldview',
-              },
-            },
+            { name: 'ethnicity', type: 'text' },
+            { name: 'birthplace', type: 'text' },
+            { name: 'actualLocation', type: 'text' },
+            { name: 'education', type: 'textarea' },
+            { name: 'backgroundStory', type: 'richText' },
+            { name: 'personality', type: 'textarea' },
+            { name: 'coreBeliefs', type: 'textarea' },
           ],
         },
       ],
     },
 
-    // Media collection (images, files)
+    // ─────────────────────────────────────────────────────────────────
+    // Media (Images & Files)
+    // ─────────────────────────────────────────────────────────────────
     {
       slug: 'media',
       upload: {
         staticDir: path.resolve(dirname, '../public/media'),
         mimeTypes: ['image/*'],
+        imageSizes: [
+          { name: 'thumbnail', width: 400, height: 300 },
+          { name: 'card', width: 768, height: 512 },
+          { name: 'hero', width: 1920, height: 1080 },
+        ],
+        focalPoint: true,
       },
       fields: [
         {
@@ -200,40 +189,48 @@ export default buildConfig({
           type: 'text',
           required: true,
         },
+        {
+          name: 'caption',
+          type: 'text',
+        },
       ],
     },
 
-    // Categories collection
+    // ─────────────────────────────────────────────────────────────────
+    // Categories
+    // ─────────────────────────────────────────────────────────────────
     {
       slug: 'categories',
       admin: {
         useAsTitle: 'name',
       },
       fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'slug',
-          type: 'text',
-          required: true,
-          unique: true,
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-        },
+        { name: 'name', type: 'text', required: true },
+        { name: 'slug', type: 'text', required: true, unique: true },
+        { name: 'description', type: 'textarea' },
       ],
     },
 
-    // Articles collection (news articles)
+    // ─────────────────────────────────────────────────────────────────
+    // Pages (Static pages with layout builder)
+    // ─────────────────────────────────────────────────────────────────
     {
-      slug: 'articles',
+      slug: 'pages',
       admin: {
         useAsTitle: 'title',
-        defaultColumns: ['title', 'author', 'status', 'category', 'publishedAt'],
+        defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
+        livePreview: {
+          url: ({ data }) => `${getServerURL()}/${data?.slug === 'home' ? '' : data?.slug || ''}`,
+        },
+      },
+      versions: {
+        drafts: {
+          autosave: {
+            interval: 100,
+          },
+          schedulePublish: true,
+        },
+        maxPerDoc: 50,
       },
       fields: [
         {
@@ -246,100 +243,150 @@ export default buildConfig({
           type: 'text',
           required: true,
           unique: true,
-          admin: {
-            description: 'URL-friendly version of the title',
-          },
+          admin: { description: 'URL path (use "home" for homepage)' },
         },
         {
-          name: 'subtitle',
-          type: 'text',
-          admin: {
-            description: 'Secondary headline displayed below the main title',
-          },
+          name: 'heroType',
+          type: 'select',
+          defaultValue: 'none',
+          options: [
+            { label: 'None', value: 'none' },
+            { label: 'Low Impact', value: 'lowImpact' },
+            { label: 'Medium Impact', value: 'mediumImpact' },
+            { label: 'High Impact', value: 'highImpact' },
+          ],
         },
         {
-          name: 'excerpt',
-          type: 'textarea',
-          required: true,
-          admin: {
-            description: 'Brief summary shown in article listings',
-          },
-        },
-        {
-          name: 'content',
-          type: 'richText',
-          required: true,
-        },
-        {
-          name: 'featuredImage',
+          name: 'heroImage',
           type: 'upload',
           relationTo: 'media',
-        },
-        {
-          name: 'author',
-          type: 'relationship',
-          relationTo: 'authors',
-          required: true,
           admin: {
-            description: 'Which columnist persona is writing this article',
+            condition: (_, siblingData) => siblingData?.heroType !== 'none',
           },
         },
         {
-          name: 'category',
-          type: 'relationship',
-          relationTo: 'categories',
-          required: true,
-        },
-        {
-          name: 'status',
-          type: 'select',
-          options: [
-            { label: 'Draft', value: 'draft' },
-            { label: 'Published', value: 'published' },
-            { label: 'Scheduled', value: 'scheduled' },
-          ],
-          defaultValue: 'draft',
-          required: true,
+          name: 'layout',
+          type: 'blocks',
+          blocks: layoutBlocks,
         },
         {
           name: 'publishedAt',
           type: 'date',
           admin: {
-            date: {
-              pickerAppearance: 'dayAndTime',
-            },
-            description: 'When this article goes live',
+            date: { pickerAppearance: 'dayAndTime' },
           },
         },
-        {
-          name: 'tags',
-          type: 'array',
-          fields: [
-            {
-              name: 'tag',
-              type: 'text',
-            },
-          ],
+      ],
+    },
+
+    // ─────────────────────────────────────────────────────────────────
+    // Articles (News/Blog Posts)
+    // ─────────────────────────────────────────────────────────────────
+    {
+      slug: 'articles',
+      admin: {
+        useAsTitle: 'title',
+        defaultColumns: ['title', 'author', '_status', 'category', 'publishedAt'],
+        livePreview: {
+          url: ({ data }) => `${getServerURL()}/article/${data?.slug || ''}`,
         },
-        // SEO fields
+      },
+      versions: {
+        drafts: {
+          autosave: {
+            interval: 100,
+          },
+          schedulePublish: true,
+        },
+        maxPerDoc: 50,
+      },
+      fields: [
         {
-          name: 'seo',
-          type: 'group',
-          label: 'SEO Settings',
-          fields: [
+          type: 'tabs',
+          tabs: [
             {
-              name: 'metaTitle',
-              type: 'text',
-              admin: {
-                description: 'Custom title for search engines (optional)',
-              },
+              label: 'Content',
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'slug',
+                  type: 'text',
+                  required: true,
+                  unique: true,
+                  admin: { description: 'URL-friendly version of the title' },
+                },
+                {
+                  name: 'subtitle',
+                  type: 'text',
+                  admin: { description: 'Secondary headline' },
+                },
+                {
+                  name: 'excerpt',
+                  type: 'textarea',
+                  required: true,
+                  admin: { description: 'Brief summary for listings' },
+                },
+                {
+                  name: 'featuredImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                },
+                {
+                  name: 'content',
+                  type: 'richText',
+                  required: true,
+                },
+                {
+                  name: 'layout',
+                  type: 'blocks',
+                  blocks: layoutBlocks,
+                  admin: {
+                    description: 'Optional: Add layout blocks after main content',
+                  },
+                },
+              ],
             },
             {
-              name: 'metaDescription',
-              type: 'textarea',
-              admin: {
-                description: 'Custom description for search engines (optional)',
-              },
+              label: 'Meta',
+              fields: [
+                {
+                  name: 'author',
+                  type: 'relationship',
+                  relationTo: 'authors',
+                  required: true,
+                },
+                {
+                  name: 'category',
+                  type: 'relationship',
+                  relationTo: 'categories',
+                  required: true,
+                },
+                {
+                  name: 'relatedArticles',
+                  type: 'relationship',
+                  relationTo: 'articles',
+                  hasMany: true,
+                  maxRows: 3,
+                  admin: { description: 'Manual selection of related articles' },
+                },
+                {
+                  name: 'tags',
+                  type: 'array',
+                  fields: [{ name: 'tag', type: 'text' }],
+                },
+                {
+                  name: 'publishedAt',
+                  type: 'date',
+                  admin: {
+                    date: { pickerAppearance: 'dayAndTime' },
+                    description: 'When this article goes live',
+                  },
+                },
+              ],
             },
           ],
         },
@@ -347,23 +394,181 @@ export default buildConfig({
     },
   ],
 
-  // Rich text editor
+  // ═══════════════════════════════════════════════════════════════════
+  // GLOBALS (Site-wide settings)
+  // ═══════════════════════════════════════════════════════════════════
+  globals: [
+    {
+      slug: 'header',
+      label: 'Header',
+      fields: [
+        {
+          name: 'logo',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'navItems',
+          type: 'array',
+          maxRows: 6,
+          fields: [
+            { name: 'label', type: 'text', required: true },
+            { name: 'url', type: 'text', required: true },
+          ],
+        },
+        {
+          name: 'ctaButton',
+          type: 'group',
+          fields: [
+            { name: 'label', type: 'text', defaultValue: 'Subscribe' },
+            { name: 'url', type: 'text', defaultValue: '/subscribe' },
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'footer',
+      label: 'Footer',
+      fields: [
+        {
+          name: 'tagline',
+          type: 'text',
+          defaultValue: 'Independent geopolitical analysis for those who want to understand.',
+        },
+        {
+          name: 'columns',
+          type: 'array',
+          maxRows: 4,
+          fields: [
+            { name: 'title', type: 'text', required: true },
+            {
+              name: 'links',
+              type: 'array',
+              fields: [
+                { name: 'label', type: 'text', required: true },
+                { name: 'url', type: 'text', required: true },
+              ],
+            },
+          ],
+        },
+        {
+          name: 'socialLinks',
+          type: 'array',
+          fields: [
+            {
+              name: 'platform',
+              type: 'select',
+              options: [
+                { label: 'Twitter/X', value: 'twitter' },
+                { label: 'LinkedIn', value: 'linkedin' },
+                { label: 'YouTube', value: 'youtube' },
+                { label: 'RSS', value: 'rss' },
+              ],
+            },
+            { name: 'url', type: 'text', required: true },
+          ],
+        },
+        {
+          name: 'copyright',
+          type: 'text',
+          defaultValue: '© 2026 The Order of Change. All rights reserved.',
+        },
+      ],
+    },
+    {
+      slug: 'siteSettings',
+      label: 'Site Settings',
+      fields: [
+        { name: 'siteName', type: 'text', defaultValue: 'The Order of Change' },
+        { name: 'siteDescription', type: 'textarea' },
+        { name: 'ogImage', type: 'upload', relationTo: 'media' },
+        {
+          name: 'analytics',
+          type: 'group',
+          fields: [
+            { name: 'googleAnalyticsId', type: 'text' },
+            { name: 'plausibleDomain', type: 'text' },
+          ],
+        },
+      ],
+    },
+  ],
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PLUGINS
+  // ═══════════════════════════════════════════════════════════════════
+  plugins: [
+    // SEO Plugin - Adds meta fields to collections
+    seoPlugin({
+      collections: ['articles', 'pages'],
+      uploadsCollection: 'media',
+      generateTitle: ({ doc }) => `${doc.title} | The Order of Change`,
+      generateDescription: ({ doc }) => doc.excerpt || doc.title,
+      generateImage: ({ doc }) => doc.featuredImage,
+      generateURL: ({ doc, collectionSlug }) => {
+        const baseUrl = getServerURL()
+        if (collectionSlug === 'articles') return `${baseUrl}/article/${doc.slug}`
+        if (collectionSlug === 'pages') return `${baseUrl}/${doc.slug === 'home' ? '' : doc.slug}`
+        return baseUrl
+      },
+    }),
+
+    // Search Plugin - Full-text search
+    searchPlugin({
+      collections: ['articles'],
+      defaultPriorities: {
+        articles: 10,
+      },
+      searchOverrides: {
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: 'excerpt',
+            type: 'text',
+          },
+          {
+            name: 'category',
+            type: 'text',
+          },
+        ],
+      },
+      beforeSync: ({ originalDoc, searchDoc }) => {
+        return {
+          ...searchDoc,
+          excerpt: originalDoc.excerpt,
+          category: typeof originalDoc.category === 'object'
+            ? originalDoc.category.name
+            : originalDoc.category,
+        }
+      },
+    }),
+
+    // Redirects Plugin - Manage URL redirects
+    redirectsPlugin({
+      collections: ['articles', 'pages'],
+      overrides: {
+        admin: {
+          group: 'Settings',
+        },
+      },
+    }),
+  ],
+
+  // ═══════════════════════════════════════════════════════════════════
+  // EDITOR & DATABASE
+  // ═══════════════════════════════════════════════════════════════════
   editor: lexicalEditor(),
 
-  // Secret for authentication
   secret: process.env.PAYLOAD_SECRET || '',
 
-  // Database configuration
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
 
-  // Image processing
   sharp,
 
-  // TypeScript type generation
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
