@@ -104,10 +104,10 @@ function estimateReadTime(content: unknown): string {
   return `${minutes} min read`;
 }
 
-function getImageUrl(image: FeaturedImage | string | undefined): string {
-  if (!image) return "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+function getImageUrl(image: FeaturedImage | string | undefined): string | null {
+  if (!image) return null;
   if (typeof image === "string") return image;
-  return image.url || "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+  return image.url || null;
 }
 
 export default async function CategoryPage({
@@ -228,8 +228,7 @@ export default async function CategoryPage({
               {articles.map((article, index) => {
                 const author = typeof article.author === "object" ? article.author : null;
                 const imageUrl = getImageUrl(article.featuredImage as FeaturedImage);
-                const authorImageUrl = author?.avatar?.url ||
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80";
+                const authorImageUrl = author?.avatar?.url || null;
 
                 return (
                   <Link key={article.id} href={`/article/${article.slug}`} className="group">
@@ -238,13 +237,21 @@ export default async function CategoryPage({
                       style={{ backgroundColor: "#0f0f0f" }}
                     >
                       <div className="relative aspect-[16/10] overflow-hidden">
-                        <Image
-                          src={imageUrl}
-                          alt={article.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          priority={index < 3}
-                        />
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={article.title}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            priority={index < 3}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)" }}>
+                            <div className="w-12 h-12 flex items-center justify-center" style={{ border: "1px solid #2a2a2a" }}>
+                              <span className="font-mono text-xs" style={{ color: "#2a2a2a" }}>OC</span>
+                            </div>
+                          </div>
+                        )}
                         <div
                           className="absolute inset-0"
                           style={{
@@ -277,14 +284,20 @@ export default async function CategoryPage({
                           style={{ borderTop: "1px solid #1c1c1c" }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full overflow-hidden">
-                              <Image
-                                src={authorImageUrl}
-                                alt={author?.penName || "Author"}
-                                width={32}
-                                height={32}
-                                className="object-cover"
-                              />
+                            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center" style={{ backgroundColor: authorImageUrl ? undefined : "rgba(184,134,11,0.15)", border: authorImageUrl ? undefined : "1px solid #2a2a2a" }}>
+                              {authorImageUrl ? (
+                                <Image
+                                  src={authorImageUrl}
+                                  alt={author?.penName || "Author"}
+                                  width={32}
+                                  height={32}
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <span className="font-mono text-[10px] font-bold" style={{ color: "#b8860b" }}>
+                                  {(author?.penName || "?").split(" ").map(n => n[0]).join("")}
+                                </span>
+                              )}
                             </div>
                             <div>
                               <span className="font-mono text-xs block" style={{ color: "#a1a1aa" }}>

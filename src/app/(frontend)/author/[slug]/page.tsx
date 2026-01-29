@@ -88,10 +88,10 @@ function estimateReadTime(content: unknown): string {
   return `${minutes} min read`;
 }
 
-function getImageUrl(image: FeaturedImage | string | undefined): string {
-  if (!image) return "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+function getImageUrl(image: FeaturedImage | string | undefined): string | null {
+  if (!image) return null;
   if (typeof image === "string") return image;
-  return image.url || "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+  return image.url || null;
 }
 
 const voiceTypeLabels: Record<string, { label: string; description: string }> = {
@@ -125,8 +125,7 @@ export default async function AuthorPage({
   const allAuthors = await getAuthors() as Author[];
   const otherAuthors = allAuthors.filter((a) => a.slug !== slug);
 
-  const authorImageUrl = author.avatar?.url ||
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80";
+  const authorImageUrl = author.avatar?.url || null;
 
   const voiceInfo = author.voiceType ? voiceTypeLabels[author.voiceType] : null;
 
@@ -182,17 +181,23 @@ export default async function AuthorPage({
             {/* Author Image */}
             <div className="flex-shrink-0">
               <div
-                className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden"
-                style={{ border: "4px solid #b8860b" }}
+                className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden flex items-center justify-center"
+                style={{ border: "4px solid #b8860b", backgroundColor: authorImageUrl ? undefined : "rgba(184,134,11,0.1)" }}
               >
-                <Image
-                  src={authorImageUrl}
-                  alt={author.penName}
-                  width={192}
-                  height={192}
-                  className="object-cover w-full h-full"
-                  priority
-                />
+                {authorImageUrl ? (
+                  <Image
+                    src={authorImageUrl}
+                    alt={author.penName}
+                    width={192}
+                    height={192}
+                    className="object-cover w-full h-full"
+                    priority
+                  />
+                ) : (
+                  <span className="font-mono text-4xl font-bold" style={{ color: "#b8860b" }}>
+                    {author.penName.split(" ").map(n => n[0]).join("")}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -289,13 +294,21 @@ export default async function AuthorPage({
                     >
                       <div className="grid md:grid-cols-3 gap-0">
                         <div className="relative aspect-[16/10] md:aspect-auto md:h-full overflow-hidden">
-                          <Image
-                            src={imageUrl}
-                            alt={article.title}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            priority={index < 2}
-                          />
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={article.title}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                              priority={index < 2}
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)" }}>
+                              <div className="w-12 h-12 flex items-center justify-center" style={{ border: "1px solid #2a2a2a" }}>
+                                <span className="font-mono text-xs" style={{ color: "#2a2a2a" }}>OC</span>
+                              </div>
+                            </div>
+                          )}
                           <div
                             className="absolute inset-0 md:hidden"
                             style={{
@@ -389,8 +402,7 @@ export default async function AuthorPage({
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {otherAuthors.map((otherAuthor) => {
-                const otherAuthorImage = otherAuthor.avatar?.url ||
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80";
+                const otherAuthorImage = otherAuthor.avatar?.url || null;
                 const otherVoiceInfo = otherAuthor.voiceType
                   ? voiceTypeLabels[otherAuthor.voiceType]
                   : null;
@@ -399,19 +411,27 @@ export default async function AuthorPage({
                   <Link key={otherAuthor.slug} href={`/author/${otherAuthor.slug}`} className="group">
                     <article className="text-center">
                       <div
-                        className="relative w-28 h-28 mx-auto mb-6 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-105"
-                        style={{ border: "3px solid #2a2a2a" }}
+                        className="relative w-28 h-28 mx-auto mb-6 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                        style={{ border: "3px solid #2a2a2a", backgroundColor: otherAuthorImage ? undefined : "rgba(184,134,11,0.1)" }}
                       >
-                        <Image
-                          src={otherAuthorImage}
-                          alt={otherAuthor.penName}
-                          fill
-                          className="object-cover"
-                        />
-                        <div
-                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          style={{ backgroundColor: "rgba(184,134,11,0.2)" }}
-                        />
+                        {otherAuthorImage ? (
+                          <>
+                            <Image
+                              src={otherAuthorImage}
+                              alt={otherAuthor.penName}
+                              fill
+                              className="object-cover"
+                            />
+                            <div
+                              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              style={{ backgroundColor: "rgba(184,134,11,0.2)" }}
+                            />
+                          </>
+                        ) : (
+                          <span className="font-mono text-xl font-bold" style={{ color: "#b8860b" }}>
+                            {otherAuthor.penName.split(" ").map(n => n[0]).join("")}
+                          </span>
+                        )}
                       </div>
 
                       <h3 className="font-display text-xl mb-2 group-hover:text-[#b8860b] transition-colors duration-300">

@@ -110,11 +110,11 @@ function estimateReadTime(content: unknown): string {
   return `${minutes} min read`;
 }
 
-// Helper to get image URL
-function getImageUrl(image: FeaturedImage | string | undefined): string {
-  if (!image) return "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+// Helper to get image URL (returns null if no image available)
+function getImageUrl(image: FeaturedImage | string | undefined): string | null {
+  if (!image) return null;
   if (typeof image === "string") return image;
-  return image.url || "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&q=80";
+  return image.url || null;
 }
 
 export default async function ArticlePage({
@@ -140,7 +140,7 @@ export default async function ArticlePage({
   const featuredImageUrl = getImageUrl(article.featuredImage);
   const authorImageUrl = author?.avatar
     ? getImageUrl(author.avatar)
-    : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80";
+    : null;
 
   const voiceTypeLabels: Record<string, string> = {
     critical: "Critical Voice",
@@ -157,13 +157,22 @@ export default async function ArticlePage({
       {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image
-            src={featuredImageUrl}
-            alt={article.title}
-            fill
-            className="object-cover"
-            priority
-          />
+          {featuredImageUrl ? (
+            <Image
+              src={featuredImageUrl}
+              alt={article.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
+              }}
+            />
+          )}
           <div
             className="absolute inset-0"
             style={{
@@ -221,16 +230,22 @@ export default async function ArticlePage({
               className="flex items-center gap-4 group"
             >
               <div
-                className="w-14 h-14 rounded-full overflow-hidden"
-                style={{ border: "2px solid #2a2a2a" }}
+                className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
+                style={{ border: "2px solid #2a2a2a", backgroundColor: authorImageUrl ? undefined : "rgba(184,134,11,0.15)" }}
               >
-                <Image
-                  src={authorImageUrl}
-                  alt={author.penName}
-                  width={56}
-                  height={56}
-                  className="object-cover"
-                />
+                {authorImageUrl ? (
+                  <Image
+                    src={authorImageUrl}
+                    alt={author.penName}
+                    width={56}
+                    height={56}
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="font-mono text-sm font-bold" style={{ color: "#b8860b" }}>
+                    {author.penName.split(" ").map(n => n[0]).join("")}
+                  </span>
+                )}
               </div>
               <div>
                 <p className="font-mono text-sm group-hover:text-[#b8860b] transition-colors">
@@ -281,16 +296,22 @@ export default async function ArticlePage({
                 className="flex-shrink-0"
               >
                 <div
-                  className="w-24 h-24 rounded-full overflow-hidden"
-                  style={{ border: "3px solid #b8860b" }}
+                  className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center"
+                  style={{ border: "3px solid #b8860b", backgroundColor: authorImageUrl ? undefined : "rgba(184,134,11,0.15)" }}
                 >
-                  <Image
-                    src={authorImageUrl}
-                    alt={author.penName}
-                    width={96}
-                    height={96}
-                    className="object-cover"
-                  />
+                  {authorImageUrl ? (
+                    <Image
+                      src={authorImageUrl}
+                      alt={author.penName}
+                      width={96}
+                      height={96}
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="font-mono text-2xl font-bold" style={{ color: "#b8860b" }}>
+                      {author.penName.split(" ").map(n => n[0]).join("")}
+                    </span>
+                  )}
                 </div>
               </Link>
 
@@ -385,12 +406,20 @@ export default async function ArticlePage({
                       style={{ backgroundColor: "#0f0f0f" }}
                     >
                       <div className="relative aspect-[16/10] overflow-hidden">
-                        <Image
-                          src={relatedImageUrl}
-                          alt={related.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
+                        {relatedImageUrl ? (
+                          <Image
+                            src={relatedImageUrl}
+                            alt={related.title}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)" }}>
+                            <div className="w-12 h-12 flex items-center justify-center" style={{ border: "1px solid #2a2a2a" }}>
+                              <span className="font-mono text-xs" style={{ color: "#2a2a2a" }}>OC</span>
+                            </div>
+                          </div>
+                        )}
                         <div
                           className="absolute inset-0"
                           style={{
