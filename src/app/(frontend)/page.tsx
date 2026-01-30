@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getPublishedArticles, getAuthors, getCategories } from "@/lib/payload";
 import { HomeClient } from "@/components/HomeClient";
 import type { HomeArticle, HomeAuthor, HomeCategory } from "@/components/HomeClient";
+import { getVoiceLabel } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -10,19 +11,6 @@ export const metadata: Metadata = {
   description:
     "See beyond the headlines. Understand the forces reshaping the global order. Independent geopolitical analysis covering power structures, capital markets, energy, and technology.",
 };
-
-function formatVoiceType(voiceType?: string): string {
-  switch (voiceType) {
-    case "critical":
-      return "Critical Voice";
-    case "pragmatic":
-      return "Pragmatic Voice";
-    case "neutral":
-      return "Neutral Synthesizer";
-    default:
-      return voiceType || "";
-  }
-}
 
 export default async function Home() {
   const [articles, authors, categories] = await Promise.all([
@@ -73,7 +61,7 @@ export default async function Home() {
     slug: author.slug as string,
     publicBio: (author.publicBio as string) || undefined,
     publicLocation: (author.publicLocation as string) || undefined,
-    voiceType: formatVoiceType(author.voiceType as string),
+    voiceType: getVoiceLabel(author.voiceType as string),
     avatar:
       typeof author.avatar === "object" && author.avatar
         ? (author.avatar.url as string)

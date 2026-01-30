@@ -11,7 +11,7 @@ import {
   StickyShareBar,
 } from "@/components/ArticleComponents";
 import { Blocks } from "@/components/Blocks";
-import { formatDate, estimateReadTime, getImageUrl, type FeaturedImage } from "@/lib/utils";
+import { formatDate, estimateReadTime, getImageUrl, getSiteUrl, voiceTypeLabels, type FeaturedImage } from "@/lib/utils";
 
 // Type definitions
 interface Author {
@@ -131,15 +131,7 @@ export default async function ArticlePage({
     ? getImageUrl(author.avatar)
     : null;
 
-  const voiceTypeLabels: Record<string, string> = {
-    critical: "Critical Voice",
-    pragmatic: "Pragmatic Voice",
-    neutral: "Neutral Synthesizer",
-  };
-
-  const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.NEXT_PUBLIC_SITE_URL || "https://orderofchange.com";
+  const siteUrl = getSiteUrl();
 
   const jsonLd = {
     "@context": "https://schema.org",

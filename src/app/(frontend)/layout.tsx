@@ -3,15 +3,12 @@ import "./globals.css";
 import { getCategories } from "@/lib/payload";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getSiteUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "The Order of Change | Geopolitical Analysis",
   description: "Analysis for those who see clearly. Independent geopolitical analysis covering power structures, capital flows, and the forces reshaping the global order.",
-  metadataBase: new URL(
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : process.env.NEXT_PUBLIC_SITE_URL || "https://orderofchange.com"
-  ),
+  metadataBase: new URL(getSiteUrl()),
   openGraph: {
     title: "The Order of Change",
     description: "See the shift. Independent geopolitical analysis.",
@@ -43,9 +40,7 @@ export default async function FrontendLayout({
 }>) {
   const categories = (await getCategories()) as unknown as Category[];
 
-  const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.NEXT_PUBLIC_SITE_URL || "https://orderofchange.com";
+  const siteUrl = getSiteUrl();
 
   const orgJsonLd = {
     "@context": "https://schema.org",

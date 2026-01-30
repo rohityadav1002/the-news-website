@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAuthorBySlug, getPaginatedArticlesByAuthor, getAuthors } from "@/lib/payload";
 import { Pagination } from "@/components/Pagination";
-import { formatDate, estimateReadTime, getImageUrl, type FeaturedImage } from "@/lib/utils";
+import { formatDate, estimateReadTime, getImageUrl, voiceTypeLabels, voiceTypeDescriptions, type FeaturedImage } from "@/lib/utils";
 
 // Type definitions
 interface Author {
@@ -70,20 +70,6 @@ export async function generateMetadata({
 
 
 
-const voiceTypeLabels: Record<string, { label: string; description: string }> = {
-  critical: {
-    label: "Critical Voice",
-    description: "Challenges conventional narratives and questions established power structures",
-  },
-  pragmatic: {
-    label: "Pragmatic Voice",
-    description: "Focuses on practical implications and real-world outcomes",
-  },
-  neutral: {
-    label: "Neutral Synthesizer",
-    description: "Synthesizes multiple perspectives into balanced analysis",
-  },
-};
 
 export default async function AuthorPage({
   params,
@@ -110,7 +96,8 @@ export default async function AuthorPage({
 
   const authorImageUrl = author.avatar?.url || null;
 
-  const voiceInfo = author.voiceType ? voiceTypeLabels[author.voiceType] : null;
+  const voiceLabel = author.voiceType ? voiceTypeLabels[author.voiceType] : null;
+  const voiceDesc = author.voiceType ? voiceTypeDescriptions[author.voiceType] : null;
 
   return (
     <>
@@ -160,17 +147,19 @@ export default async function AuthorPage({
                 {author.penName}
               </h1>
 
-              {voiceInfo && (
+              {voiceLabel && (
                 <div className="mb-6">
                   <span
                     className="inline-block font-mono text-xs uppercase tracking-wider px-4 py-2 mb-2"
                     style={{ backgroundColor: "rgba(184,134,11,0.15)", color: "#b8860b" }}
                   >
-                    {voiceInfo.label}
+                    {voiceLabel}
                   </span>
-                  <p className="font-mono text-sm" style={{ color: "#52525b" }}>
-                    {voiceInfo.description}
-                  </p>
+                  {voiceDesc && (
+                    <p className="font-mono text-sm" style={{ color: "#52525b" }}>
+                      {voiceDesc}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -356,7 +345,7 @@ export default async function AuthorPage({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {otherAuthors.map((otherAuthor) => {
                 const otherAuthorImage = otherAuthor.avatar?.url || null;
-                const otherVoiceInfo = otherAuthor.voiceType
+                const otherVoiceLabel = otherAuthor.voiceType
                   ? voiceTypeLabels[otherAuthor.voiceType]
                   : null;
 
@@ -391,12 +380,12 @@ export default async function AuthorPage({
                         {otherAuthor.penName}
                       </h3>
 
-                      {otherVoiceInfo && (
+                      {otherVoiceLabel && (
                         <p
                           className="font-mono text-xs uppercase tracking-wider mb-3"
                           style={{ color: "#b8860b" }}
                         >
-                          {otherVoiceInfo.label}
+                          {otherVoiceLabel}
                         </p>
                       )}
 

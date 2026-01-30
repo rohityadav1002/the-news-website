@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { getAuthors, getCategories } from "@/lib/payload";
+import { voiceTypeLabels, voiceTypeDescriptions } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -15,21 +16,6 @@ export const metadata: Metadata = {
       "Independent geopolitical analysis from multiple perspectives.",
     type: "website",
   },
-};
-
-const voiceLabels: Record<string, string> = {
-  critical: "Critical Voice",
-  pragmatic: "Pragmatic Voice",
-  neutral: "Neutral Synthesizer",
-};
-
-const voiceDescriptions: Record<string, string> = {
-  critical:
-    "Questions power, follows the money, and exposes the narratives behind global events.",
-  pragmatic:
-    "Analyzes outcomes over intentions, focuses on results and strategic positioning.",
-  neutral:
-    "Synthesizes competing viewpoints and provides context without agenda.",
 };
 
 interface Author {
@@ -264,16 +250,16 @@ export default async function AboutPage() {
                           className="font-mono text-xs uppercase tracking-wider mb-3"
                           style={{ color: "#b8860b" }}
                         >
-                          {voiceLabels[author.voiceType] || author.voiceType}
+                          {voiceTypeLabels[author.voiceType] || author.voiceType}
                         </p>
                       )}
                       {author.voiceType &&
-                        voiceDescriptions[author.voiceType] && (
+                        voiceTypeDescriptions[author.voiceType] && (
                           <p
                             className="mb-3 leading-relaxed"
                             style={{ color: "#a1a1aa" }}
                           >
-                            {voiceDescriptions[author.voiceType]}
+                            {voiceTypeDescriptions[author.voiceType]}
                           </p>
                         )}
                       {author.publicBio && (
