@@ -149,7 +149,7 @@ export default async function ArticlePage({
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0a0a", color: "#fafaf9" }}>
+    <>
       <ReadingProgress />
       <ScrollNav />
       <StickyShareBar title={article.title} />
@@ -471,54 +471,6 @@ export default async function ArticlePage({
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="py-12 px-6 lg:px-12" style={{ borderTop: "1px solid #1c1c1c" }}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 flex items-center justify-center" style={{ border: "1px solid #b8860b" }}>
-              <span className="font-mono text-xs font-bold" style={{ color: "#b8860b" }}>
-                OC
-              </span>
-            </div>
-            <span className="font-display text-lg">The Order of Change</span>
-          </Link>
-
-          <div className="flex items-center gap-6">
-            <Link
-              href="/about"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#a1a1aa" }}
-            >
-              About
-            </Link>
-            <Link
-              href="/subscribe"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#a1a1aa" }}
-            >
-              Subscribe
-            </Link>
-            <Link
-              href="/contact"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#a1a1aa" }}
-            >
-              Contact
-            </Link>
-            <Link
-              href="/admin"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#52525b" }}
-            >
-              Admin
-            </Link>
-          </div>
-
-          <p className="font-mono text-xs" style={{ color: "#52525b" }}>
-            © 2026 The Order of Change
-          </p>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }

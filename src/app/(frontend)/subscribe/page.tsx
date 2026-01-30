@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { getCategories } from "@/lib/payload";
 
 export const dynamic = "force-dynamic";
 
@@ -16,79 +15,9 @@ export const metadata: Metadata = {
   },
 };
 
-interface Category {
-  name: string;
-  slug: string;
-}
-
 export default async function SubscribePage() {
-  const categories = await getCategories();
-  const categoryList = categories as unknown as Category[];
-
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#0a0a0a", color: "#fafaf9" }}
-    >
-      {/* Navigation */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{
-          backgroundColor: "rgba(10,10,10,0.9)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 flex items-center justify-center"
-                style={{
-                  border: "1px solid #b8860b",
-                  backgroundColor: "rgba(184,134,11,0.1)",
-                }}
-              >
-                <span
-                  className="font-mono text-sm font-bold"
-                  style={{ color: "#b8860b" }}
-                >
-                  OC
-                </span>
-              </div>
-              <span className="font-display text-xl tracking-wide hidden sm:block">
-                The Order of Change
-              </span>
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-8">
-              {categoryList.slice(0, 4).map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-
-            <Link
-              href="/subscribe"
-              className="font-mono text-xs uppercase tracking-wider px-5 py-2.5"
-              style={{
-                border: "1px solid #b8860b",
-                backgroundColor: "#b8860b",
-                color: "#0a0a0a",
-              }}
-            >
-              Subscribe
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <>
       {/* Hero */}
       <section className="pt-32 pb-16 px-6 lg:px-12 relative overflow-hidden">
         <div
@@ -327,54 +256,6 @@ export default async function SubscribePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer
-        className="py-12 px-6 lg:px-12"
-        style={{ borderTop: "1px solid #1c1c1c" }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 flex items-center justify-center"
-              style={{ border: "1px solid #b8860b" }}
-            >
-              <span
-                className="font-mono text-xs font-bold"
-                style={{ color: "#b8860b" }}
-              >
-                OC
-              </span>
-            </div>
-            <span className="font-display text-lg">The Order of Change</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/about"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#a1a1aa" }}
-            >
-              About
-            </Link>
-            <Link
-              href="/subscribe"
-              className="font-mono text-xs uppercase tracking-wider"
-              style={{ color: "#b8860b" }}
-            >
-              Subscribe
-            </Link>
-            <Link
-              href="/contact"
-              className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-              style={{ color: "#a1a1aa" }}
-            >
-              Contact
-            </Link>
-          </div>
-          <p className="font-mono text-xs" style={{ color: "#52525b" }}>
-            &copy; 2026 The Order of Change
-          </p>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }

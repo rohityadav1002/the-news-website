@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getCategories } from "@/lib/payload";
+import { SiteNav } from "@/components/SiteNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "The Order of Change | Geopolitical Analysis",
@@ -11,15 +14,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FrontendLayout({
+interface Category {
+  name: string;
+  slug: string;
+}
+
+export default async function FrontendLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const categories = (await getCategories()) as unknown as Category[];
+
   return (
     <html lang="en">
       <body className="bg-[#0a0a0a] text-[#fafaf9] antialiased">
+        <SiteNav categories={categories} />
         {children}
+        <SiteFooter categories={categories} />
       </body>
     </html>
   );

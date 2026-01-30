@@ -247,44 +247,7 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
   const latestArticles = articles.slice(1);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0a0a", color: "#fafaf9" }}>
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: "rgba(10,10,10,0.8)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center" style={{ border: "1px solid #b8860b", backgroundColor: "rgba(184,134,11,0.1)" }}>
-                <span className="font-mono text-sm font-bold" style={{ color: "#b8860b" }}>OC</span>
-              </div>
-              <span className="font-display text-xl tracking-wide hidden sm:block">
-                The Order of Change
-              </span>
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-8">
-              {categories.slice(0, 4).map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-
-            <Link
-              href="/subscribe"
-              className="font-mono text-xs uppercase tracking-wider px-5 py-2.5 transition-all duration-300 hover:bg-[#b8860b] hover:text-[#0a0a0a]"
-              style={{ border: "1px solid #b8860b", color: "#b8860b" }}
-            >
-              Subscribe
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <>
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
@@ -749,57 +712,6 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
         </AnimatedSection>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 px-6 lg:px-12" style={{ borderTop: "1px solid #1c1c1c" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="md:col-span-2">
-              <Link href="/" className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 flex items-center justify-center" style={{ border: "1px solid #b8860b" }}>
-                  <span className="font-mono text-sm font-bold" style={{ color: "#b8860b" }}>OC</span>
-                </div>
-                <span className="font-display text-xl">The Order of Change</span>
-              </Link>
-              <p className="max-w-sm" style={{ color: "#a1a1aa" }}>
-                Independent geopolitical analysis for those who want to understand the forces reshaping our world.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-mono text-xs uppercase tracking-wider mb-6" style={{ color: "#b8860b" }}>Topics</h4>
-              <ul className="space-y-3">
-                {categories.slice(0, 4).map((cat) => (
-                  <li key={cat.slug}>
-                    <Link href={`/category/${cat.slug}`} className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: "#a1a1aa" }}>
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-mono text-xs uppercase tracking-wider mb-6" style={{ color: "#b8860b" }}>Company</h4>
-              <ul className="space-y-3">
-                <li><Link href="/about" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: "#a1a1aa" }}>About</Link></li>
-                <li><Link href="/subscribe" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: "#a1a1aa" }}>Subscribe</Link></li>
-                <li><Link href="/contact" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: "#a1a1aa" }}>Contact</Link></li>
-                <li><Link href="/admin" className="text-sm hover:text-[#b8860b] transition-colors" style={{ color: "#52525b" }}>Admin</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8" style={{ borderTop: "1px solid #1c1c1c" }}>
-            <p className="font-mono text-xs" style={{ color: "#52525b" }}>
-              &copy; 2026 The Order of Change. All rights reserved.
-            </p>
-            <p className="font-mono text-xs italic" style={{ color: "#52525b" }}>
-              See the shift.
-            </p>
-          </div>
-        </div>
-      </footer>
-
       {/* CSS Animations */}
       <style jsx global>{`
         @keyframes fadeInUp {
@@ -853,6 +765,6 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }
