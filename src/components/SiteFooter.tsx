@@ -111,12 +111,28 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
           <p className="font-mono text-xs" style={{ color: "#52525b" }}>
             &copy; 2026 The Order of Change. All rights reserved.
           </p>
-          <p
-            className="font-mono text-xs italic"
-            style={{ color: "#52525b" }}
-          >
-            See the shift.
-          </p>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/privacy"
+              className="font-mono text-xs hover:text-[#b8860b] transition-colors"
+              style={{ color: "#52525b" }}
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="font-mono text-xs hover:text-[#b8860b] transition-colors"
+              style={{ color: "#52525b" }}
+            >
+              Terms
+            </Link>
+            <p
+              className="font-mono text-xs italic"
+              style={{ color: "#52525b" }}
+            >
+              See the shift.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { SubscribeForm } from "@/components/SubscribeForm";
 
 export const dynamic = "force-dynamic";
 
@@ -78,53 +79,7 @@ export default async function SubscribePage() {
               Free. No spam. Unsubscribe anytime.
             </p>
 
-            <form className="space-y-4">
-              <div>
-                <label
-                  className="font-mono text-xs uppercase tracking-wider block mb-2"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b]"
-                  style={{
-                    backgroundColor: "#0a0a0a",
-                    border: "1px solid #2a2a2a",
-                    color: "#fafaf9",
-                  }}
-                />
-              </div>
-
-              <div>
-                <label
-                  className="font-mono text-xs uppercase tracking-wider block mb-2"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  First Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="Your first name"
-                  className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b]"
-                  style={{
-                    backgroundColor: "#0a0a0a",
-                    border: "1px solid #2a2a2a",
-                    color: "#fafaf9",
-                  }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full font-mono text-sm uppercase tracking-wider px-8 py-4 transition-all duration-300 bg-[#b8860b] text-[#0a0a0a] hover:bg-[#d4a00a] cursor-pointer"
-                style={{ border: "none" }}
-              >
-                Subscribe
-              </button>
-            </form>
+            <SubscribeForm />
           </div>
         </div>
       </section>

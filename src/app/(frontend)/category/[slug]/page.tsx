@@ -2,7 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getPayloadClient, getPublishedArticles, getCategories } from "@/lib/payload";
+import { getPayloadClient, getPaginatedArticles, getCategories } from "@/lib/payload";
+import { Pagination } from "@/components/Pagination";
+import { formatDate, estimateReadTime, getImageUrl, type FeaturedImage } from "@/lib/utils";
 
 // Type definitions
 interface Author {
@@ -18,11 +20,6 @@ interface Category {
   name: string;
   slug: string;
   description?: string;
-}
-
-interface FeaturedImage {
-  url?: string;
-  alt?: string;
 }
 
 interface Article {
@@ -55,10 +52,15 @@ async function getCategoryBySlug(slug: string): Promise<Category | null> {
   return (categories.docs[0] as Category) || null;
 }
 
-// Get articles by category
-async function getArticlesByCategory(categorySlug: string): Promise<Article[]> {
-  const articles = await getPublishedArticles(100, categorySlug);
-  return articles as Article[];
+// Get paginated articles by category
+async function getArticlesByCategory(categorySlug: string, page: number) {
+  const result = await getPaginatedArticles(categorySlug, page, 12);
+  return {
+    articles: result.docs as Article[],
+    totalPages: result.totalPages,
+    currentPage: result.page,
+    totalDocs: result.totalDocs,
+  };
 }
 
 // Generate metadata
@@ -87,42 +89,25 @@ export async function generateMetadata({
   };
 }
 
-// Helper functions
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
-function estimateReadTime(content: unknown): string {
-  const contentStr = JSON.stringify(content);
-  const wordCount = contentStr.split(/\s+/).length / 3;
-  const minutes = Math.max(1, Math.ceil(wordCount / 200));
-  return `${minutes} min read`;
-}
-
-function getImageUrl(image: FeaturedImage | string | undefined): string | null {
-  if (!image) return null;
-  if (typeof image === "string") return image;
-  return image.url || null;
-}
 
 export default async function CategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { slug } = await params;
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1);
   const category = await getCategoryBySlug(slug);
 
   if (!category) {
     notFound();
   }
 
-  const articles = await getArticlesByCategory(slug);
+  const { articles, totalPages, totalDocs } = await getArticlesByCategory(slug, currentPage);
   const allCategories = await getCategories();
 
   return (
@@ -150,7 +135,7 @@ export default async function CategoryPage({
             </p>
           )}
           <p className="font-mono text-sm mt-8" style={{ color: "#52525b" }}>
-            {articles.length} {articles.length === 1 ? "article" : "articles"}
+            {totalDocs} {totalDocs === 1 ? "article" : "articles"}
           </p>
         </div>
       </section>
@@ -275,6 +260,12 @@ export default async function CategoryPage({
               })}
             </div>
           )}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            basePath={`/category/${slug}`}
+          />
         </div>
       </section>
 

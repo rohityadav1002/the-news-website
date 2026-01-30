@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { ContactForm } from "@/components/ContactForm";
 
 export const dynamic = "force-dynamic";
 
@@ -134,97 +135,7 @@ export default async function ContactPage() {
               border: "1px solid #1c1c1c",
             }}
           >
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    className="font-mono text-xs uppercase tracking-wider block mb-2"
-                    style={{ color: "#a1a1aa" }}
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b]"
-                    style={{
-                      backgroundColor: "#0a0a0a",
-                      border: "1px solid #2a2a2a",
-                      color: "#fafaf9",
-                    }}
-                  />
-                </div>
-                <div>
-                  <label
-                    className="font-mono text-xs uppercase tracking-wider block mb-2"
-                    style={{ color: "#a1a1aa" }}
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b]"
-                    style={{
-                      backgroundColor: "#0a0a0a",
-                      border: "1px solid #2a2a2a",
-                      color: "#fafaf9",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  className="font-mono text-xs uppercase tracking-wider block mb-2"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  Subject
-                </label>
-                <select
-                  className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b] appearance-none cursor-pointer"
-                  style={{
-                    backgroundColor: "#0a0a0a",
-                    border: "1px solid #2a2a2a",
-                    color: "#a1a1aa",
-                  }}
-                >
-                  <option value="">Select a topic</option>
-                  <option value="tip">Story Tip</option>
-                  <option value="correction">Editorial Correction</option>
-                  <option value="media">Media / Press</option>
-                  <option value="feedback">Feedback</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label
-                  className="font-mono text-xs uppercase tracking-wider block mb-2"
-                  style={{ color: "#a1a1aa" }}
-                >
-                  Message
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Your message..."
-                  className="w-full px-4 py-3 font-mono text-sm outline-none transition-all duration-300 focus:border-[#b8860b] resize-vertical"
-                  style={{
-                    backgroundColor: "#0a0a0a",
-                    border: "1px solid #2a2a2a",
-                    color: "#fafaf9",
-                  }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="font-mono text-sm uppercase tracking-wider px-8 py-4 transition-all duration-300 bg-[#b8860b] text-[#0a0a0a] hover:bg-[#d4a00a] cursor-pointer"
-                style={{ border: "none" }}
-              >
-                Send Message
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </section>

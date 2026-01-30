@@ -282,6 +282,81 @@ export default buildConfig({
     },
 
     // ─────────────────────────────────────────────────────────────────
+    // Subscribers (Newsletter signups)
+    // ─────────────────────────────────────────────────────────────────
+    {
+      slug: 'subscribers',
+      admin: {
+        useAsTitle: 'email',
+        description: 'Newsletter subscribers',
+        defaultColumns: ['email', 'firstName', 'createdAt'],
+        group: 'Forms',
+      },
+      access: {
+        create: () => true,
+        read: () => true,
+      },
+      fields: [
+        {
+          name: 'email',
+          type: 'email',
+          required: true,
+          unique: true,
+        },
+        {
+          name: 'firstName',
+          type: 'text',
+        },
+      ],
+    },
+
+    // ─────────────────────────────────────────────────────────────────
+    // Contact Submissions
+    // ─────────────────────────────────────────────────────────────────
+    {
+      slug: 'contact-submissions',
+      admin: {
+        useAsTitle: 'subject',
+        description: 'Contact form submissions',
+        defaultColumns: ['name', 'subject', 'email', 'createdAt'],
+        group: 'Forms',
+      },
+      access: {
+        create: () => true,
+        read: () => true,
+      },
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'email',
+          type: 'email',
+          required: true,
+        },
+        {
+          name: 'subject',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Story Tip', value: 'tip' },
+            { label: 'Editorial Correction', value: 'correction' },
+            { label: 'Media / Press', value: 'media' },
+            { label: 'Feedback', value: 'feedback' },
+            { label: 'Other', value: 'other' },
+          ],
+        },
+        {
+          name: 'message',
+          type: 'textarea',
+          required: true,
+        },
+      ],
+    },
+
+    // ─────────────────────────────────────────────────────────────────
     // Articles (News/Blog Posts)
     // ─────────────────────────────────────────────────────────────────
     {

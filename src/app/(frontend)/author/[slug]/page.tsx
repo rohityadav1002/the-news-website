@@ -2,7 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getAuthorBySlug, getArticlesByAuthor, getAuthors } from "@/lib/payload";
+import { getAuthorBySlug, getPaginatedArticlesByAuthor, getAuthors } from "@/lib/payload";
+import { Pagination } from "@/components/Pagination";
+import { formatDate, estimateReadTime, getImageUrl, type FeaturedImage } from "@/lib/utils";
 
 // Type definitions
 interface Author {
@@ -23,11 +25,6 @@ interface Category {
   id: string;
   name: string;
   slug: string;
-}
-
-interface FeaturedImage {
-  url?: string;
-  alt?: string;
 }
 
 interface Article {
@@ -71,28 +68,7 @@ export async function generateMetadata({
   };
 }
 
-// Helper functions
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
-function estimateReadTime(content: unknown): string {
-  const contentStr = JSON.stringify(content);
-  const wordCount = contentStr.split(/\s+/).length / 3;
-  const minutes = Math.max(1, Math.ceil(wordCount / 200));
-  return `${minutes} min read`;
-}
-
-function getImageUrl(image: FeaturedImage | string | undefined): string | null {
-  if (!image) return null;
-  if (typeof image === "string") return image;
-  return image.url || null;
-}
 
 const voiceTypeLabels: Record<string, { label: string; description: string }> = {
   critical: {
@@ -111,17 +87,24 @@ const voiceTypeLabels: Record<string, { label: string; description: string }> = 
 
 export default async function AuthorPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { slug } = await params;
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1);
   const author = await getAuthorBySlug(slug) as Author | null;
 
   if (!author) {
     notFound();
   }
 
-  const articles = await getArticlesByAuthor(author.id) as Article[];
+  const result = await getPaginatedArticlesByAuthor(author.id, currentPage, 12);
+  const articles = result.docs as Article[];
+  const totalPages = result.totalPages;
+  const totalDocs = result.totalDocs;
   const allAuthors = await getAuthors() as Author[];
   const otherAuthors = allAuthors.filter((a) => a.slug !== slug);
 
@@ -207,7 +190,7 @@ export default async function AuthorPage({
               )}
 
               <p className="font-mono text-sm mt-6" style={{ color: "#52525b" }}>
-                {articles.length} {articles.length === 1 ? "article" : "articles"} published
+                {totalDocs} {totalDocs === 1 ? "article" : "articles"} published
               </p>
             </div>
           </div>
@@ -344,6 +327,12 @@ export default async function AuthorPage({
               })}
             </div>
           )}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            basePath={`/author/${slug}`}
+          />
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileMenu } from "./MobileMenu";
 
 interface Category {
   name: string;
@@ -50,13 +51,16 @@ export function SiteNav({ categories }: { categories: Category[] }) {
             ))}
           </div>
 
-          <Link
-            href="/subscribe"
-            className="font-mono text-xs uppercase tracking-wider px-5 py-2.5 transition-all duration-300 hover:bg-[#b8860b] hover:text-[#0a0a0a]"
-            style={{ border: "1px solid #b8860b", color: "#b8860b" }}
-          >
-            Subscribe
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/subscribe"
+              className="hidden sm:inline-flex font-mono text-xs uppercase tracking-wider px-5 py-2.5 transition-all duration-300 hover:bg-[#b8860b] hover:text-[#0a0a0a]"
+              style={{ border: "1px solid #b8860b", color: "#b8860b" }}
+            >
+              Subscribe
+            </Link>
+            <MobileMenu categories={categories} />
+          </div>
         </div>
       </div>
     </nav>

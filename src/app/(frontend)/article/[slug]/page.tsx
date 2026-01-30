@@ -11,11 +11,13 @@ import {
   StickyShareBar,
 } from "@/components/ArticleComponents";
 import { Blocks } from "@/components/Blocks";
+import { formatDate, estimateReadTime, getImageUrl, type FeaturedImage } from "@/lib/utils";
 
 // Type definitions
 interface Author {
   id: string;
   penName: string;
+  slug: string;
   publicBio?: string;
   publicLocation?: string;
   voiceType?: string;
@@ -29,11 +31,6 @@ interface Category {
   id: string;
   name: string;
   slug: string;
-}
-
-interface FeaturedImage {
-  url?: string;
-  alt?: string;
 }
 
 interface Article {
@@ -77,45 +74,37 @@ export async function generateMetadata({
 
   const author = typeof article.author === "object" ? article.author : null;
 
+  const featuredImg = article.featuredImage;
+  const ogImage =
+    featuredImg && typeof featuredImg === "object" && featuredImg.url
+      ? featuredImg.url
+      : undefined;
+
   return {
     title: article.seo?.metaTitle || `${article.title} | The Order of Change`,
     description: article.seo?.metaDescription || article.excerpt,
     authors: author ? [{ name: author.penName }] : [],
+    alternates: {
+      canonical: `/article/${slug}`,
+    },
     openGraph: {
       title: article.title,
       description: article.excerpt,
       type: "article",
       publishedTime: article.publishedAt,
       authors: author ? [author.penName] : [],
+      images: ogImage ? [ogImage] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }
 
-// Helper to format date
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
-// Helper to estimate read time (roughly 200 words per minute)
-function estimateReadTime(content: unknown): string {
-  // Very rough estimate based on content structure
-  const contentStr = JSON.stringify(content);
-  const wordCount = contentStr.split(/\s+/).length / 3; // Divide by 3 to account for JSON structure
-  const minutes = Math.max(1, Math.ceil(wordCount / 200));
-  return `${minutes} min read`;
-}
-
-// Helper to get image URL (returns null if no image available)
-function getImageUrl(image: FeaturedImage | string | undefined): string | null {
-  if (!image) return null;
-  if (typeof image === "string") return image;
-  return image.url || null;
-}
 
 export default async function ArticlePage({
   params,
@@ -148,8 +137,42 @@ export default async function ArticlePage({
     neutral: "Neutral Synthesizer",
   };
 
+  const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.NEXT_PUBLIC_SITE_URL || "https://orderofchange.com";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.excerpt,
+    image: featuredImageUrl ? [featuredImageUrl] : undefined,
+    datePublished: article.publishedAt,
+    author: author
+      ? {
+          "@type": "Person",
+          name: author.penName,
+          url: `${siteUrl}/author/${author.slug}`,
+        }
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "The Order of Change",
+      url: siteUrl,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/article/${article.slug}`,
+    },
+    articleSection: category?.name,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <ReadingProgress />
       <ScrollNav />
       <StickyShareBar title={article.title} />
@@ -226,7 +249,7 @@ export default async function ArticlePage({
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           {author && (
             <Link
-              href={`/author/${author.penName?.toLowerCase().replace(/\s+/g, "-")}`}
+              href={`/author/${author.slug}`}
               className="flex items-center gap-4 group"
             >
               <div
@@ -292,7 +315,7 @@ export default async function ArticlePage({
               style={{ border: "1px solid #1c1c1c" }}
             >
               <Link
-                href={`/author/${author.penName?.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/author/${author.slug}`}
                 className="flex-shrink-0"
               >
                 <div
@@ -322,7 +345,7 @@ export default async function ArticlePage({
                 >
                   About the Author
                 </p>
-                <Link href={`/author/${author.penName?.toLowerCase().replace(/\s+/g, "-")}`}>
+                <Link href={`/author/${author.slug}`}>
                   <h3 className="font-display text-2xl mb-2 hover:text-[#b8860b] transition-colors">
                     {author.penName}
                   </h3>
@@ -332,7 +355,7 @@ export default async function ArticlePage({
                   {author.publicLocation && ` ${author.publicLocation}.`}
                 </p>
                 <Link
-                  href={`/author/${author.penName?.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={`/author/${author.slug}`}
                   className="inline-flex font-mono text-xs uppercase tracking-wider px-4 py-2 transition-all duration-300 hover:bg-[#b8860b] hover:text-[#0a0a0a]"
                   style={{ border: "1px solid #b8860b", color: "#b8860b" }}
                 >
