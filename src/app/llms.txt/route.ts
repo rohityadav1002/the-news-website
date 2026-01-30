@@ -16,8 +16,8 @@ export async function GET() {
     getCategories(),
   ])
 
-  const authorList = (authors as { penName: string; slug: string; publicBio?: string; voiceType?: string }[])
-  const categoryList = (categories as { name: string; slug: string; description?: string }[])
+  const authorList = authors as unknown as { penName: string; slug: string; publicBio?: string; voiceType?: string }[]
+  const categoryList = categories as unknown as { name: string; slug: string; description?: string }[]
 
   const voiceLabels: Record<string, string> = {
     critical: 'Critical Voice',

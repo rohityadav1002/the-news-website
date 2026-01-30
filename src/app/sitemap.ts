@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  const authorPages: MetadataRoute.Sitemap = (authors as { slug: string }[]).map(
+  const authorPages: MetadataRoute.Sitemap = (authors as unknown as { slug: string }[]).map(
     (author) => ({
       url: `${siteUrl}/author/${author.slug}`,
       lastModified: new Date(),
@@ -62,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   )
 
-  const categoryPages: MetadataRoute.Sitemap = (categories as { slug: string }[]).map(
+  const categoryPages: MetadataRoute.Sitemap = (categories as unknown as { slug: string }[]).map(
     (cat) => ({
       url: `${siteUrl}/category/${cat.slug}`,
       lastModified: new Date(),
