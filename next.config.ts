@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Allow Live Preview iframe embedding
+  // Restrict iframe embedding to same origin only (prevents clickjacking)
   async headers() {
     return [
       {
@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors *",
+            value: "frame-ancestors 'self'",
           },
         ],
       },
