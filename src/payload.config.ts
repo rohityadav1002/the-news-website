@@ -12,6 +12,15 @@ import { layoutBlocks } from './blocks'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Access control helpers — guards for REST/GraphQL API and admin panel
+// Local API (used by frontend pages) bypasses these via overrideAccess
+const isAdmin = ({ req }: { req: { user?: Record<string, unknown> | null } }) =>
+  req.user?.role === 'admin'
+const isAdminOrEditor = ({ req }: { req: { user?: Record<string, unknown> | null } }) =>
+  req.user?.role === 'admin' || req.user?.role === 'editor'
+const isAuthenticated = ({ req }: { req: { user?: Record<string, unknown> | null } }) =>
+  Boolean(req.user)
+
 // Helper to get server URL
 const getServerURL = () => {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
@@ -93,6 +102,13 @@ export default buildConfig({
         description: 'Public columnist personas (V. Rao, A. Sterling, M. Chen)',
         defaultColumns: ['penName', 'voiceType', 'publicLocation'],
       },
+      // Public read (author profiles), admin-only create/modify
+      access: {
+        read: () => true,
+        create: isAdmin,
+        update: isAdminOrEditor,
+        delete: isAdmin,
+      },
       fields: [
         {
           name: 'penName',
@@ -137,12 +153,16 @@ export default buildConfig({
         {
           name: 'contentFocus',
           type: 'textarea',
+          // Internal only — hidden from public API responses
+          access: { read: isAdmin, update: isAdmin },
           admin: { description: 'What type of content this author writes (internal)' },
         },
         {
           name: 'privateInfo',
           type: 'group',
           label: 'Private Information (Internal Only)',
+          // Admin-only — never exposed in public API responses
+          access: { read: isAdmin, update: isAdmin },
           admin: { description: 'Background details for persona consistency' },
           fields: [
             { name: 'fullName', type: 'text' },
@@ -173,6 +193,13 @@ export default buildConfig({
     // ─────────────────────────────────────────────────────────────────
     {
       slug: 'media',
+      // Public read (images served on site), authenticated upload, admin delete
+      access: {
+        read: () => true,
+        create: isAuthenticated,
+        update: isAdminOrEditor,
+        delete: isAdmin,
+      },
       upload: {
         staticDir: path.resolve(dirname, '../public/media'),
         mimeTypes: ['image/*'],
@@ -204,6 +231,13 @@ export default buildConfig({
       admin: {
         useAsTitle: 'name',
       },
+      // Public read (used in navigation), admin-only manage
+      access: {
+        read: () => true,
+        create: isAdmin,
+        update: isAdmin,
+        delete: isAdmin,
+      },
       fields: [
         { name: 'name', type: 'text', required: true },
         { name: 'slug', type: 'text', required: true, unique: true },
@@ -222,6 +256,13 @@ export default buildConfig({
         livePreview: {
           url: ({ data }) => `${getServerURL()}/${data?.slug === 'home' ? '' : data?.slug || ''}`,
         },
+      },
+      // Public read (site pages), editor+ create/update, admin delete
+      access: {
+        read: () => true,
+        create: isAdminOrEditor,
+        update: isAdminOrEditor,
+        delete: isAdmin,
       },
       versions: {
         drafts: {
@@ -292,9 +333,12 @@ export default buildConfig({
         defaultColumns: ['email', 'firstName', 'createdAt'],
         group: 'Forms',
       },
+      // Public create (form submissions), admin-only read/modify
       access: {
         create: () => true,
-        read: () => true,
+        read: isAdmin,
+        update: isAdmin,
+        delete: isAdmin,
       },
       fields: [
         {
@@ -321,9 +365,12 @@ export default buildConfig({
         defaultColumns: ['name', 'subject', 'email', 'createdAt'],
         group: 'Forms',
       },
+      // Public create (form submissions), admin-only read/modify
       access: {
         create: () => true,
-        read: () => true,
+        read: isAdmin,
+        update: isAdmin,
+        delete: isAdmin,
       },
       fields: [
         {
@@ -367,6 +414,13 @@ export default buildConfig({
         livePreview: {
           url: ({ data }) => `${getServerURL()}/article/${data?.slug || ''}`,
         },
+      },
+      // Public read (published articles), editor+ create/update, admin delete
+      access: {
+        read: () => true,
+        create: isAdminOrEditor,
+        update: isAdminOrEditor,
+        delete: isAdmin,
       },
       versions: {
         drafts: {
