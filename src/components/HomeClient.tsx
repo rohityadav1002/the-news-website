@@ -403,9 +403,9 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {latestArticles.map((article, index) => (
-                <AnimatedSection key={article.slug} delay={index * 150}>
-                  <Link href={`/article/${article.slug}`} className="block group">
-                    <article className="relative overflow-hidden h-full" style={{ backgroundColor: "#0f0f0f" }}>
+                <AnimatedSection key={article.slug} delay={index * 150} className="flex">
+                  <Link href={`/article/${article.slug}`} className="block group flex-1">
+                    <article className="relative overflow-hidden h-full flex flex-col" style={{ backgroundColor: "#0f0f0f" }}>
                       <div className="relative aspect-[16/10] overflow-hidden">
                         <ArticleImage
                           src={article.image}
@@ -420,14 +420,14 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
                         </div>
                       </div>
 
-                      <div className="p-6">
+                      <div className="p-6 flex flex-col flex-1">
                         <h3 className="font-display text-2xl mb-3 group-hover:text-[#b8860b] transition-colors duration-300">
                           {article.title}
                         </h3>
                         <p className="mb-6 leading-relaxed line-clamp-2" style={{ color: "#a1a1aa" }}>
                           {article.excerpt}
                         </p>
-                        <div className="flex items-center justify-between pt-4" style={{ borderTop: "1px solid #1c1c1c" }}>
+                        <div className="flex items-center justify-between pt-4 mt-auto" style={{ borderTop: "1px solid #1c1c1c" }}>
                           <div className="flex items-center gap-3">
                             <AuthorAvatar src={article.author.avatar} name={article.author.penName} size={32} />
                             <span className="font-mono text-xs" style={{ color: "#a1a1aa" }}>{article.author.penName}</span>
