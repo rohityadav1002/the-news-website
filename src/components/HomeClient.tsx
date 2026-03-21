@@ -524,9 +524,9 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {authors.map((author, index) => (
-                <AnimatedSection key={author.slug} delay={index * 150}>
-                  <Link href={`/author/${author.slug}`} className="group">
-                    <article className="text-center">
+                <AnimatedSection key={author.slug} delay={index * 150} className="flex">
+                  <Link href={`/author/${author.slug}`} className="group flex-1">
+                    <article className="text-center h-full flex flex-col items-center">
                       <div className="relative w-40 h-40 mx-auto mb-8 rounded-full overflow-hidden flex items-center justify-center" style={{ border: "3px solid #2a2a2a" }}>
                         {author.avatar ? (
                           <>
@@ -556,12 +556,12 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
                         </p>
                       )}
                       {author.publicBio && (
-                        <p className="text-sm mb-3 max-w-xs mx-auto" style={{ color: "#a1a1aa" }}>
+                        <p className="text-sm mb-3 max-w-xs mx-auto line-clamp-3" style={{ color: "#a1a1aa" }}>
                           {author.publicBio}
                         </p>
                       )}
                       {author.publicLocation && (
-                        <p className="font-mono text-xs uppercase tracking-wider" style={{ color: "#52525b" }}>
+                        <p className="font-mono text-xs uppercase tracking-wider mt-auto" style={{ color: "#52525b" }}>
                           {author.publicLocation}
                         </p>
                       )}
