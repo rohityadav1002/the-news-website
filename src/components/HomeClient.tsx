@@ -55,12 +55,6 @@ interface HomeClientProps {
 const heroImage = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80";
 const globeImage = "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1200&q=80";
 
-const siteStats = [
-  { value: 147, suffix: "+", label: "Countries Covered" },
-  { value: 500, suffix: "K+", label: "Monthly Readers" },
-  { value: 12, suffix: "", label: "Years of Analysis" },
-  { value: 98, suffix: "%", label: "Reader Retention" },
-];
 
 const editorialQuotes = [
   {
@@ -109,27 +103,6 @@ function useInView(threshold = 0.1) {
   return { ref, isInView };
 }
 
-function useCounter(end: number, duration: number = 2000, start: boolean = false) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!start) return;
-
-    let startTime: number;
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      setCount(Math.floor(progress * end));
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-    requestAnimationFrame(animate);
-  }, [end, duration, start]);
-
-  return count;
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // ANIMATION COMPONENTS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -152,21 +125,6 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-function StatCounter({ value, suffix, label }: { value: number; suffix: string; label: string }) {
-  const { ref, isInView } = useInView(0.3);
-  const count = useCounter(value, 2000, isInView);
-
-  return (
-    <div ref={ref} className="text-center">
-      <div className="font-display text-5xl lg:text-6xl mb-2" style={{ color: "#b8860b" }}>
-        {count}{suffix}
-      </div>
-      <div className="font-mono text-xs uppercase tracking-wider" style={{ color: "#a1a1aa" }}>
-        {label}
-      </div>
-    </div>
-  );
-}
 
 function ArticleImage({ src, alt, fill = true, className = "" }: { src?: string; alt?: string; fill?: boolean; className?: string }) {
   if (!src) {
@@ -319,20 +277,6 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
 
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
           <div className="w-px h-12" style={{ background: "linear-gradient(to bottom, #b8860b, transparent)", animation: "pulse 2s ease-in-out infinite" }} />
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 px-6 lg:px-12 relative overflow-hidden" style={{ backgroundColor: "#0f0f0f" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at top, rgba(184,134,11,0.05) 0%, transparent 50%)" }} />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {siteStats.map((stat, index) => (
-              <AnimatedSection key={stat.label} delay={index * 100}>
-                <StatCounter value={stat.value} suffix={stat.suffix} label={stat.label} />
-              </AnimatedSection>
-            ))}
-          </div>
         </div>
       </section>
 
