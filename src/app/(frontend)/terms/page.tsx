@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Terms of Service | The Order of Change",
   description: "Terms and conditions for using The Order of Change.",

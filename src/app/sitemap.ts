@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getAllArticleSlugs, getAuthors, getCategories } from '@/lib/payload'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 function getSiteUrl() {
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL)

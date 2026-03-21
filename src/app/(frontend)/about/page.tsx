@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { getAuthors, getCategories } from "@/lib/payload";
 import { voiceTypeLabels, voiceTypeDescriptions } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "About | The Order of Change",

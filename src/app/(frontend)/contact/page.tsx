@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Contact | The Order of Change",
   description:

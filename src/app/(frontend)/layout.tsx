@@ -1,9 +1,33 @@
 import type { Metadata } from "next";
+import { Playfair_Display, Libre_Baskerville, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { getCategories } from "@/lib/payload";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteUrl } from "@/lib/utils";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const libreBaskerville = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-libre",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "The Order of Change | Geopolitical Analysis",
@@ -53,7 +77,7 @@ export default async function FrontendLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${playfair.variable} ${libreBaskerville.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[#0a0a0a] text-[#fafaf9] antialiased">
         <script
           type="application/ld+json"

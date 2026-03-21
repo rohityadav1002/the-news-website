@@ -53,9 +53,7 @@ interface Article {
   };
 }
 
-// Dynamic rendering - fetch article on each request
-// This avoids needing database access at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 // Generate metadata for the page
 export async function generateMetadata({

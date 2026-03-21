@@ -35,7 +35,7 @@ interface Article {
   publishedAt?: string;
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 // Get category by slug
 async function getCategoryBySlug(slug: string): Promise<Category | null> {

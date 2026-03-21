@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 
@@ -5,7 +6,7 @@ export async function getPayloadClient() {
   return await getPayload({ config: configPromise })
 }
 
-export async function getArticleBySlug(slug: string, draft = false) {
+export const getArticleBySlug = cache(async function getArticleBySlug(slug: string, draft = false) {
   const payload = await getPayloadClient()
 
   const articles = await payload.find({
@@ -21,7 +22,7 @@ export async function getArticleBySlug(slug: string, draft = false) {
   })
 
   return articles.docs[0] || null
-}
+})
 
 export async function getPublishedArticles(limit = 10, category?: string) {
   const payload = await getPayloadClient()
@@ -33,7 +34,7 @@ export async function getPublishedArticles(limit = 10, category?: string) {
         _status: { equals: 'published' },
         'category.slug': { equals: category },
       },
-      depth: 2,
+      depth: 1,
       limit,
       sort: '-publishedAt',
     })
@@ -45,7 +46,7 @@ export async function getPublishedArticles(limit = 10, category?: string) {
     where: {
       _status: { equals: 'published' },
     },
-    depth: 2,
+    depth: 1,
     limit,
     sort: '-publishedAt',
   })
@@ -63,7 +64,7 @@ export async function getRelatedArticles(currentSlug: string, categoryId: string
       category: { equals: categoryId },
       _status: { equals: 'published' },
     },
-    depth: 2,
+    depth: 1,
     limit,
     sort: '-publishedAt',
   })
@@ -122,7 +123,7 @@ export async function getArticlesByAuthor(authorId: string, limit = 50) {
       author: { equals: authorId },
       _status: { equals: 'published' },
     },
-    depth: 2,
+    depth: 1,
     limit,
     sort: '-publishedAt',
   })
@@ -185,7 +186,7 @@ export async function getPaginatedArticles(category: string, page: number, perPa
       _status: { equals: 'published' },
       'category.slug': { equals: category },
     },
-    depth: 2,
+    depth: 1,
     limit: perPage,
     page,
     sort: '-publishedAt',
@@ -209,7 +210,7 @@ export async function getPaginatedArticlesByAuthor(authorId: string, page: numbe
       author: { equals: authorId },
       _status: { equals: 'published' },
     },
-    depth: 2,
+    depth: 1,
     limit: perPage,
     page,
     sort: '-publishedAt',
@@ -233,7 +234,7 @@ export async function getArticlesByTag(tag: string, limit = 50) {
       _status: { equals: 'published' },
       'tags.tag': { equals: tag },
     },
-    depth: 2,
+    depth: 1,
     limit,
     sort: '-publishedAt',
   })
@@ -269,16 +270,19 @@ export async function getAllTags() {
     .sort((a, b) => b.count - a.count)
 }
 
-// Search articles
+// Search articles — sanitize input before querying
 export async function searchArticles(query: string, limit = 10) {
+  const sanitized = (query || '').trim().slice(0, 200)
+  if (!sanitized) return []
+
   const payload = await getPayloadClient()
 
   const results = await payload.find({
     collection: 'search',
     where: {
       or: [
-        { title: { like: query } },
-        { excerpt: { like: query } },
+        { title: { like: sanitized } },
+        { excerpt: { like: sanitized } },
       ],
     },
     limit,

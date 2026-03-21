@@ -40,7 +40,7 @@ interface Article {
   publishedAt?: string;
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 // Generate metadata
 export async function generateMetadata({

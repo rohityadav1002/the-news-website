@@ -4,7 +4,7 @@ import { HomeClient } from "@/components/HomeClient";
 import type { HomeArticle, HomeAuthor, HomeCategory } from "@/components/HomeClient";
 import { getVoiceLabel } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "The Order of Change | Geopolitical Analysis",

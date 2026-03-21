@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { SubscribeForm } from "@/components/SubscribeForm";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Subscribe | The Order of Change",
   description:

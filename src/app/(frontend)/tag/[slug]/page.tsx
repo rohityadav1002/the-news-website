@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { getArticlesByTag } from "@/lib/payload";
 import { formatDate, getImageUrl, type FeaturedImage } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface Author {
   penName: string;
