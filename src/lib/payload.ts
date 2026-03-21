@@ -87,7 +87,7 @@ export async function getAllArticleSlugs() {
   return articles.docs.map((article) => article.slug)
 }
 
-export async function getAuthors() {
+export const getAuthors = cache(async function getAuthors() {
   const payload = await getPayloadClient()
 
   const authors = await payload.find({
@@ -97,7 +97,7 @@ export async function getAuthors() {
   })
 
   return authors.docs
-}
+})
 
 export async function getAuthorBySlug(slug: string) {
   const payload = await getPayloadClient()
@@ -131,7 +131,7 @@ export async function getArticlesByAuthor(authorId: string, limit = 50) {
   return articles.docs
 }
 
-export async function getCategories() {
+export const getCategories = cache(async function getCategories() {
   const payload = await getPayloadClient()
 
   const categories = await payload.find({
@@ -140,7 +140,7 @@ export async function getCategories() {
   })
 
   return categories.docs
-}
+})
 
 // Get page by slug
 export async function getPageBySlug(slug: string, draft = false) {

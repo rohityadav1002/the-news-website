@@ -29,6 +29,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "The Order of Change | Geopolitical Analysis",
   description: "Analysis for those who see clearly. Independent geopolitical analysis covering power structures, capital flows, and the forces reshaping the global order.",
