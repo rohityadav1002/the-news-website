@@ -630,40 +630,6 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
         </section>
       )}
 
-      {/* Categories Section */}
-      {categories.length > 0 && (
-        <section className="py-24 px-6 lg:px-12">
-          <div className="max-w-5xl mx-auto">
-            <AnimatedSection>
-              <div className="flex items-center gap-4 mb-12">
-                <span className="font-mono text-xs uppercase tracking-[0.2em]" style={{ color: "#b8860b" }}>
-                  Explore Topics
-                </span>
-                <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, #2a2a2a, transparent)" }} />
-              </div>
-            </AnimatedSection>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {categories.map((category, index) => (
-                <AnimatedSection key={category.slug} delay={index * 100}>
-                  <Link
-                    href={`/category/${category.slug}`}
-                    className="group relative overflow-hidden p-8 text-center transition-all duration-300"
-                    style={{ backgroundColor: "#0f0f0f", border: "1px solid #1c1c1c" }}
-                  >
-                    <h3 className="font-display text-lg lg:text-xl group-hover:text-[#b8860b] transition-colors duration-300">
-                      {category.name}
-                    </h3>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ border: "1px solid #b8860b" }} />
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ backgroundColor: "#b8860b" }} />
-                  </Link>
-                </AnimatedSection>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Newsletter CTA */}
       <section className="py-32 px-6 lg:px-12 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(184,134,11,0.15) 0%, transparent 70%)" }} />
