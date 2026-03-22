@@ -92,7 +92,7 @@ export default async function FrontendLayout({
         >
           Skip to content
         </a>
-        <SiteNav categories={categories} />
+        <SiteNav />
         <main id="main-content">
           {children}
         </main>

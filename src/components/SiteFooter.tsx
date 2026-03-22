@@ -42,7 +42,7 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
               Topics
             </h4>
             <ul className="space-y-3">
-              {categories.slice(0, 4).map((cat) => (
+              {categories.map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={`/category/${cat.slug}`}
@@ -64,6 +64,15 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
               Company
             </h4>
             <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/search"
+                  className="text-sm hover:text-[#b8860b] transition-colors"
+                  style={{ color: "#a1a1aa" }}
+                >
+                  Search
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/about"
