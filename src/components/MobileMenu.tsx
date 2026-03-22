@@ -16,7 +16,7 @@ export function MobileMenu({ categories }: { categories: Category[] }) {
       {/* Hamburger button — visible below lg */}
       <button
         onClick={() => setOpen(!open)}
-        className="lg:hidden flex flex-col gap-1.5 w-8 h-8 items-center justify-center"
+        className=" flex flex-col gap-1.5 w-8 h-8 items-center justify-center"
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
       >
@@ -46,7 +46,7 @@ export function MobileMenu({ categories }: { categories: Category[] }) {
       {/* Mobile menu overlay */}
       {open && (
         <div
-          className="fixed inset-0 top-20 z-40 lg:hidden"
+          className="fixed inset-0 top-20 z-40 "
           style={{
             backgroundColor: "rgba(10,10,10,0.98)",
             backdropFilter: "blur(12px)",

@@ -38,19 +38,6 @@ export function SiteNav({ categories }: { categories: Category[] }) {
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8">
-            {categories.slice(0, 4).map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/category/${cat.slug}`}
-                className="font-mono text-xs uppercase tracking-wider hover:text-[#b8860b] transition-colors"
-                style={{ color: "#a1a1aa" }}
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </div>
-
           <div className="flex items-center gap-4">
             <Link
               href="/subscribe"
