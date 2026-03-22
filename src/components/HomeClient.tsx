@@ -459,50 +459,22 @@ export function HomeClient({ articles, authors, categories }: HomeClientProps) {
 
         <div className="max-w-6xl mx-auto relative z-10">
           <AnimatedSection>
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div>
-                <span className="font-mono text-xs uppercase tracking-[0.3em] block mb-6" style={{ color: "#b8860b" }}>
-                  Global Coverage
-                </span>
-                <h2 className="font-display text-4xl lg:text-5xl mb-6">
-                  Analysis Without Borders
-                </h2>
-                <p className="text-lg leading-relaxed mb-8" style={{ color: "#a1a1aa" }}>
-                  Our analysts are positioned across Asia, the Gulf, and Europe, giving you perspectives that Western media often misses. We follow the money, question the narratives, and connect the dots across regions.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  {["Asia-Pacific", "Middle East", "Europe", "Americas", "Africa"].map((region) => (
-                    <span key={region} className="font-mono text-xs uppercase tracking-wider px-4 py-2" style={{ backgroundColor: "rgba(184,134,11,0.1)", color: "#b8860b", border: "1px solid rgba(184,134,11,0.3)" }}>
-                      {region}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="aspect-square relative">
-                  <div className="absolute inset-0 rounded-full" style={{ border: "1px solid rgba(184,134,11,0.2)" }} />
-                  <div className="absolute inset-8 rounded-full" style={{ border: "1px solid rgba(184,134,11,0.15)" }} />
-                  <div className="absolute inset-16 rounded-full" style={{ border: "1px solid rgba(184,134,11,0.1)" }} />
-
-                  {[
-                    { top: "20%", left: "60%" },
-                    { top: "40%", left: "30%" },
-                    { top: "50%", left: "70%" },
-                    { top: "70%", left: "45%" },
-                  ].map((pos, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-3 h-3 rounded-full"
-                      style={{
-                        ...pos,
-                        backgroundColor: "#b8860b",
-                        animation: "pulse 2s ease-in-out infinite",
-                        animationDelay: `${i * 0.5}s`,
-                      }}
-                    />
-                  ))}
-                </div>
+            <div className="max-w-3xl mx-auto text-center">
+              <span className="font-mono text-xs uppercase tracking-[0.3em] block mb-6" style={{ color: "#b8860b" }}>
+                Global Coverage
+              </span>
+              <h2 className="font-display text-4xl lg:text-5xl mb-6">
+                Analysis Without Borders
+              </h2>
+              <p className="text-lg leading-relaxed mb-8" style={{ color: "#a1a1aa" }}>
+                Our analysts are positioned across Asia, the Gulf, and Europe, giving you perspectives that Western media often misses. We follow the money, question the narratives, and connect the dots across regions.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {["Asia-Pacific", "Middle East", "Europe", "Americas", "Africa"].map((region) => (
+                  <span key={region} className="font-mono text-xs uppercase tracking-wider px-4 py-2" style={{ backgroundColor: "rgba(184,134,11,0.1)", color: "#b8860b", border: "1px solid rgba(184,134,11,0.3)" }}>
+                    {region}
+                  </span>
+                ))}
               </div>
             </div>
           </AnimatedSection>
